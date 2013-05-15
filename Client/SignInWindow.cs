@@ -20,15 +20,19 @@ namespace Client
     public partial class SignInWindow : Form
     {
         private MainWindow _mainWindow;
+        private Connection _connection;
+        private delegate void FormInvokeDelegate();
 
         public SignInWindow()
         {
             InitializeComponent();
-            _mainWindow = new MainWindow();
+            this._connection = Connection.Instance;
+            this._connection.Client.RaiseUpdateUserId += UpdateUserId;
         }
 
         private void buttonQuit_Click(object sender, EventArgs e)
         {
+            this._connection.Dispose();
             this.Dispose();
         }
 
@@ -39,16 +43,13 @@ namespace Client
 
             try
             {
-                Connection.Instance.Connect(host, port);
+                this._connection.Connect(host, port);
             }
             catch (Exception se)
             {
                 MessageBox.Show(se.Message);
                 return;
             }
-
-            Connection.Instance.Client.RaiseSignedUpdateUserId += UpdateUserId;
-            Connection.Instance.Client.RaiseSignedUpdateUserId += _mainWindow.UpdateUserId;
 
             SignIn();
         }
@@ -60,12 +61,18 @@ namespace Client
             {
                 String = user
             };
-            Connection.Instance.Client.Send(Interface.Events.SIGN_IN, JsonConvert.SerializeObject(json));
+            this._connection.Client.Send(Interface.Events.SIGN_IN, JsonConvert.SerializeObject(json));
         }
 
         private void UpdateUserId(object sender, String s)
         {
-            this._mainWindow.Show();
+            if (this._mainWindow == null || this._mainWindow.IsDisposed)
+            {
+                this._mainWindow = new MainWindow();
+                this._mainWindow.Owner = this;
+            }
+            FormInvokeDelegate d = new FormInvokeDelegate(this._mainWindow.Show);
+            this.Invoke(d);
         }
     }
 }

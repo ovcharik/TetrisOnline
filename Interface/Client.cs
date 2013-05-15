@@ -10,26 +10,43 @@ namespace Interface
     public class Client
     {
         private Thread receiveThread;
-            
-        public Socket Socket { get; set; }
-        public Client(Socket socket)
+        private Socket _socket;
+        public Socket Socket 
         {
-            this.Socket = socket;
-            this.receiveThread = new Thread(delegate()
+            get
             {
-                try
+                return this._socket;
+            }
+            set
+            {
+                if (this._socket != value)
                 {
-                    while (this.Socket.Connected)
-                    {
-                        this.MessageReceiver();
-                    }
+                    if (this.receiveThread != null) this.receiveThread.Abort();
+                    this._socket = value;
+                    this.receiveThread = new Thread(delegate()
+                        {
+                            try
+                            {
+                                while (this.Socket.Connected)
+                                {
+                                    this.MessageReceiver();
+                                }
+                            }
+                            catch (Exception se)
+                            {
+                                if (this.RaiseReceiveStoped != null) this.RaiseReceiveStoped(this, se);
+                            }
+                        });
+                    this.receiveThread.Start();
                 }
-                catch (SocketException se)
-                {
-                    if (this.RaiseReceiveStoped != null) this.RaiseReceiveStoped(this, se);
-                }
-            });
+            }
         }
+
+        public Client()
+        {
+            this.Socket = null;
+        }
+
 
         public void Send(Int32 e, String j)
         {
@@ -50,22 +67,19 @@ namespace Interface
 
                 this.Socket.Send(data);
             }
-            catch (SocketException se)
+            catch (Exception se)
             {
                 throw se;
             }
         }
 
-        public void Start()
-        {
-            this.receiveThread.Start();
-        }
-
         public void Dispose()
         {
-            this.receiveThread.Abort();
-            this.Socket.Close();
-            this.Socket.Dispose();
+            try
+            {
+                this.receiveThread.Abort();
+            }
+            catch { }
         }
 
         private void MessageReceiver()
@@ -102,14 +116,14 @@ namespace Interface
         }
 
         // Events
-        public event EventHandler<SocketException> RaiseReceiveStoped;
+        public event EventHandler<Exception> RaiseReceiveStoped;
         public event EventHandler<String> RaiseSignIn;
         public event EventHandler<String> RaiseSignOut;
 
         public event EventHandler<String> RaiseSignedIn;
         public event EventHandler<String> RaiseSignedOut;
-        public event EventHandler<String> RaiseSignedUpdateUserId;
-        public event EventHandler<String> RaiseSignedUpdateUserList;
+        public event EventHandler<String> RaiseUpdateUserId;
+        public event EventHandler<String> RaiseUpdateUserList;
 
         private void EventRoute(Int32 e, String j)
         {
@@ -131,10 +145,10 @@ namespace Interface
                     if (RaiseSignedOut != null) RaiseSignedOut(this, j);
                     break;
                 case Events.UPDATE_ID:
-                    if (RaiseSignedUpdateUserId != null) RaiseSignedUpdateUserId(this, j);
+                    if (RaiseUpdateUserId != null) RaiseUpdateUserId(this, j);
                     break;
                 case Events.UPDATE_USER_LIST:
-                    if (RaiseSignedUpdateUserList != null) RaiseSignedUpdateUserList(this, j);
+                    if (RaiseUpdateUserList != null) RaiseUpdateUserList(this, j);
                     break;
             }
         }

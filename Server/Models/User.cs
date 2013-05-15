@@ -43,13 +43,12 @@ namespace Server.Models
         {
             this._socket = socket;
             this._id = this.GetHashCode();
-            this._client = new Client(socket);
+            this._client = new Client();
+            this._client.Socket = socket;
 
             this._client.RaiseSignIn += SignIn;
             this._client.RaiseSignOut += SignOut;
             this._client.RaiseReceiveStoped += ReceiveStoped;
-
-            this._client.Start();
         }
 
         public void SendMessage(Int32 e, String j)
@@ -73,7 +72,7 @@ namespace Server.Models
             if (this.Users != null) this.Users.SignedOut(this);
         }
 
-        void ReceiveStoped(object sender, SocketException se)
+        void ReceiveStoped(object sender, Exception se)
         {
             SignOut(sender, "");
         }

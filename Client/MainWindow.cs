@@ -19,6 +19,19 @@ namespace Client
 
         public void UpdateUserId(object sender, String s)
         {
+            MessageBox.Show(s);
+        }
+
+
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.Owner != null) this.Owner.Show();
+        }
+
+        private void MainWindow_Shown(object sender, EventArgs e)
+        {
+            if (this.Owner != null) this.Owner.Hide();
         }
     }
 }

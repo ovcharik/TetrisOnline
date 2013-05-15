@@ -23,16 +23,19 @@ namespace Client
 
         private Interface.Client _client;
         private Socket _socket;
-        private Connection() { }
+        private Connection()
+        {
+            this._client = new Interface.Client();
+        }
 
         public Interface.Client Client
         {
             get { return this._client; }
         }
+
         public void Connect(String host, String port)
         {
-            if (this._client != null) this._client.Dispose();
-            if (this._socket != null && this._socket.Connected) this._socket.Disconnect(true);
+            this.Disconnect();
             IPAddress[] ips;
             try
             {
@@ -44,8 +47,24 @@ namespace Client
             {
                 throw e;
             }
-            _client = new Interface.Client(this._socket);
-            _client.Start();
+
+            this._client.Socket = this._socket;
+        }
+
+        public void Disconnect()
+        {
+            if (this._socket != null && this._socket.Connected)
+            {
+                this._socket.Close();
+                this._socket.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            this._socket.Close();
+            this._socket.Dispose();
+            this._client.Dispose();
         }
     }
 }
