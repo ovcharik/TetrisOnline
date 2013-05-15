@@ -10,16 +10,15 @@ using System.Windows.Forms;
 
 namespace Client
 {
-    public partial class Window : Form
+    public partial class MainWindow : Form
     {
-        public Window()
+        public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void buttonQuit_Click(object sender, EventArgs e)
+        public void UpdateUserId(object sender, String s)
         {
-            this.Dispose();
         }
     }
 }

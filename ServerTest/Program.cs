@@ -8,7 +8,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 
-using Server;
+using Interface;
+using Interface.Json;
 
 using Newtonsoft.Json;
 
@@ -71,7 +72,7 @@ namespace ServerTest
             Console.Write("Input name: ");
             String name = Console.ReadLine();
 
-            Server.Json.BaseObject json = new Server.Json.BaseObject();
+            JsonBaseObject json = new JsonBaseObject();
             json.String = name;
             String s_json = JsonConvert.SerializeObject(json);
             Console.WriteLine("Json: {0}", s_json);

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Server.Json
+namespace Interface.Json
 {
     [JsonObject]
-    public class BaseObject
+    public class JsonBaseObject
     {
         [JsonProperty("Int")]
         public Int32 Int { get; set; }
