@@ -9,7 +9,7 @@ using System.Net.Sockets;
 
 namespace Client
 {
-    class Connection
+    public class Connection
     {
         private static Connection _instance = null;
         public static Connection Instance
