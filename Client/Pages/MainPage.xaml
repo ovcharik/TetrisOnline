@@ -1,14 +1,24 @@
-﻿<Page x:Class="Client.Pages.MainPage"
+﻿<Page
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:Json="clr-namespace:Interface.Json;assembly=Interface" x:Class="Client.Pages.MainPage" 
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      d:DesignHeight="400" d:DesignWidth="600"
 	Title="Main">
-
     <Grid>
-        <Label Content="Label" HorizontalAlignment="Left" Margin="113,101,0,0" VerticalAlignment="Top"/>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="9*"/>
+            <ColumnDefinition Width="31*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="User List" Margin="10,10,10,0" VerticalAlignment="Top"/>
+        <ListView x:Name="listBoxUsers" Margin="10,41,10,10" ItemsSource="{Binding}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Grid.Column="0" Text="{Binding String}" HorizontalAlignment="Left"></TextBlock>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

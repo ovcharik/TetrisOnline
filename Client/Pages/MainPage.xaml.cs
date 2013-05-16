@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Newtonsoft.Json;
+using Interface.Json;
+
 namespace Client.Pages
 {
     /// <summary>
@@ -29,7 +32,46 @@ namespace Client.Pages
 
         public void OnRaiseUpdateId(object sender, String json)
         {
-            MessageBox.Show(json);
+        }
+
+        public void OnRaiseUpdateUserList(object sender, String json)
+        {
+            List<JsonBaseObject> userList = JsonConvert.DeserializeObject<List<JsonBaseObject>>(json);
+
+            this.Dispatcher.Invoke(delegate
+            {
+                this.listBoxUsers.Items.Clear();
+                foreach (var u in userList)
+                {
+                    this.listBoxUsers.Items.Add(u);
+                }
+            });
+        }
+
+        public void OnRaiseSignedIn(object sender, String json)
+        {
+            JsonBaseObject user = JsonConvert.DeserializeObject<JsonBaseObject>(json);
+            this.Dispatcher.Invoke(delegate
+            {
+                this.listBoxUsers.Items.Add(user);
+            });
+        }
+
+        public void OnRaiseSignedOut(object sender, String json)
+        {
+            JsonBaseObject user = JsonConvert.DeserializeObject<JsonBaseObject>(json);
+            this.Dispatcher.Invoke(delegate
+            {
+                foreach (JsonBaseObject u in this.listBoxUsers.Items)
+                {
+                    if (u.Int == user.Int)
+                    {
+                        user = u;
+                        break;
+                    }
+                }
+                this.listBoxUsers.Items.Remove(user);
+            });
         }
     }
 }

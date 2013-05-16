@@ -36,6 +36,9 @@ namespace Client
 
             Connection.Client.RaiseUpdateUserId += SignInPage.OnRaiseUpdateId;
             Connection.Client.RaiseUpdateUserId += MainPage.OnRaiseUpdateId;
+            Connection.Client.RaiseUpdateUserList += MainPage.OnRaiseUpdateUserList;
+            Connection.Client.RaiseSignedIn += MainPage.OnRaiseSignedIn;
+            Connection.Client.RaiseSignedOut += MainPage.OnRaiseSignedOut;
 
         }
 
