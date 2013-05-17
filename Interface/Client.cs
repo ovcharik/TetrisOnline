@@ -32,6 +32,7 @@ namespace Interface
                                     this.MessageReceiver();
                                 }
                             }
+                            catch (ThreadAbortException te) { }
                             catch (Exception se)
                             {
                                 if (this.RaiseReceiveStoped != null) this.RaiseReceiveStoped(this, se);
@@ -103,7 +104,7 @@ namespace Interface
                 this.Socket.Receive(buffer, s, SocketFlags.Partial);
                 j = Encoding.UTF8.GetString(buffer);
             }
-            catch (SocketException se)
+            catch (Exception se)
             {
                 throw se;
             }

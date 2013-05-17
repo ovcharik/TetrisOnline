@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -33,13 +34,10 @@ namespace Client
             MainPage = new Pages.MainPage(this);
 
             Connection = Connection.Instance;
+            Connection.Data.Dispatcher = Dispatcher;
 
             Connection.Client.RaiseUpdateUserId += SignInPage.OnRaiseUpdateId;
-            Connection.Client.RaiseUpdateUserId += MainPage.OnRaiseUpdateId;
-            Connection.Client.RaiseUpdateUserList += MainPage.OnRaiseUpdateUserList;
-            Connection.Client.RaiseSignedIn += MainPage.OnRaiseSignedIn;
-            Connection.Client.RaiseSignedOut += MainPage.OnRaiseSignedOut;
-
+            Connection.Client.RaiseReceiveStoped += OnRaiseReceiveStoped;
         }
 
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
@@ -52,6 +50,15 @@ namespace Client
             this.Connection.Dispose();
         }
 
+        public void OnRaiseReceiveStoped(object sender, Exception e)
+        {
+            Dispatcher.Invoke(delegate
+            {
+                MessageBox.Show(e.ToString());
+                this.Connection.Disconnect();
+                this.MainFrame.Content = this.SignInPage;
+            });
+        }
 
     }
 }

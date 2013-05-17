@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    class MessagesContent
+    class Message
     {
+        public String Data { get; set; }
+        public DateTime DateTime { get; set; }
         public User User { get; set; }
-        public MessagesContent() { }
     }
 }

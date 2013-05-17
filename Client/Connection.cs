@@ -21,16 +21,26 @@ namespace Client
             }
         }
 
-        private Interface.Client _client;
+        private Data _Data;
+        public Data Data { get { return _Data; } }
+
+        private Interface.Client _Client;
         private Socket _socket;
+
         private Connection()
         {
-            this._client = new Interface.Client();
+            this._Client = new Interface.Client();
+            this._Data = new Data();
+
+            _Client.RaiseSignedIn += _Data.OnRaiseSignedIn;
+            _Client.RaiseSignedOut += _Data.OnRaiseSignedOut;
+            _Client.RaiseUpdateUserId += _Data.OnRaiseUpdateId;
+            _Client.RaiseUpdateUserList += _Data.OnRaiseUpdateUserList;
         }
 
         public Interface.Client Client
         {
-            get { return this._client; }
+            get { return this._Client; }
         }
 
         public void Connect(String host, String port)
@@ -48,7 +58,7 @@ namespace Client
                 throw e;
             }
 
-            this._client.Socket = this._socket;
+            this._Client.Socket = this._socket;
         }
 
         public void Disconnect()
@@ -67,7 +77,7 @@ namespace Client
                 this._socket.Close();
                 this._socket.Dispose();
             }
-            this._client.Dispose();
+            this._Client.Dispose();
         }
     }
 }

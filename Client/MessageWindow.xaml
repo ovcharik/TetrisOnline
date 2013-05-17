@@ -1,13 +1,14 @@
 ﻿<Window x:Class="Client.MessageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Messages" Height="300" Width="300" Loaded="Window_Loaded_1" MinWidth="300" MinHeight="300">
+        xmlns:local="clr-namespace:Client.Models"
+        Title="Messages" Height="300" Width="300" MinWidth="300" MinHeight="300" Closed="Window_Closed_1">
     <TabControl x:Name="TabControlMain" ItemsSource="{Binding}">
         <TabControl.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate DataType="{x:Type local:User}">
                 <StackPanel Orientation="Horizontal" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
-                    <TextBlock Text="{Binding User.Name}" VerticalAlignment="Center" />
-                    <Button Command="{Binding TabClose}" Content="X" FontSize="9" Focusable="False" VerticalContentAlignment="Bottom" FontFamily="Courier" Margin="10,0,0,0" Padding="0" VerticalAlignment="Center" Height="16" Width="16" />
+                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="{Binding Color}" />
+                    <Button Content="X" FontSize="9" Focusable="False" VerticalContentAlignment="Bottom" FontFamily="Courier" Margin="10,0,0,0" Padding="0" VerticalAlignment="Center" Height="16" Width="16" Click="Button_Click_1" />
                 </StackPanel>
             </DataTemplate>
         </TabControl.ItemTemplate>

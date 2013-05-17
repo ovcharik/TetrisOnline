@@ -14,9 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using Newtonsoft.Json;
-using Interface.Json;
-
 namespace Client.Pages
 {
     /// <summary>
@@ -25,65 +22,12 @@ namespace Client.Pages
     public partial class MainPage : Page
     {
         public MainWindow Owner { get; set; }
-        public ObservableCollection<Models.User> UserCollection { get; set; }
         
         public MainPage(MainWindow owner)
         {
             InitializeComponent();
-            DataContext = this;
+            UserList.DataContext = Connection.Instance.Data.Users;
             Owner = owner;
-            UserCollection = new ObservableCollection<Models.User>();
-        }
-
-        public void OnRaiseUpdateId(object sender, String json)
-        {
-        }
-
-        public void OnRaiseUpdateUserList(object sender, String json)
-        {
-            List<JsonBaseObject> userList = JsonConvert.DeserializeObject<List<JsonBaseObject>>(json);
-            this.Dispatcher.Invoke(delegate
-            {
-                this.UserCollection.Clear();
-                foreach (var u in userList)
-                {
-                    this.UserCollection.Add(new Models.User
-                    {
-                        Id = u.Int,
-                        Name = u.String
-                    });
-                }
-            });
-        }
-
-        public void OnRaiseSignedIn(object sender, String json)
-        {
-            JsonBaseObject user = JsonConvert.DeserializeObject<JsonBaseObject>(json);
-            this.Dispatcher.Invoke(delegate
-            {
-                this.UserCollection.Add(new Models.User
-                {
-                    Id = user.Int,
-                    Name = user.String
-                });
-            });
-        }
-
-        public void OnRaiseSignedOut(object sender, String json)
-        {
-            JsonBaseObject user = JsonConvert.DeserializeObject<JsonBaseObject>(json);
-            this.Dispatcher.Invoke(delegate
-            {
-                foreach (var i in this.UserCollection)
-                {
-                    if (i.Id == user.Int)
-                    {
-                        this.UserCollection.Remove(i);
-                        break;
-                    }
-                }
-                
-            });
         }
 
         private void ListView_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
@@ -92,14 +36,7 @@ namespace Client.Pages
             Models.User u = l.SelectedItem as Models.User;
             if (u != null)
             {
-                MessageWindow msg = new MessageWindow();
-                msg.Show();
-
-                Models.MessagesContent mc = new Models.MessagesContent
-                {
-                    User = u
-                };
-                msg.TabControlMain.Items.Add(mc);
+                MessageWindow.Instance.AddUser(u);
             }
         }
     }

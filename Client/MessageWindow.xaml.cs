@@ -19,13 +19,53 @@ namespace Client
     /// </summary>
     public partial class MessageWindow : Window
     {
-        public MessageWindow()
+        private static MessageWindow _Instance = null;
+        public static MessageWindow Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    _Instance = new MessageWindow();
+                return _Instance;
+            }
+        }
+        private MessageWindow()
         {
             InitializeComponent();
         }
 
-        private void Window_Loaded_1(object sender, RoutedEventArgs e)
+        public void AddUser(Models.User user)
         {
+            this.Show();
+
+            if (!this.TabControlMain.Items.Contains(user))
+            {
+                this.TabControlMain.Items.Add(user);
+            }
+            this.TabControlMain.SelectedItem = user;
+            this.Activate();
+        }
+
+        private void Window_Closed_1(object sender, EventArgs e)
+        {
+            _Instance = null;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            if (b != null)
+            {
+                Models.User u = b.DataContext as Models.User;
+                if (u != null)
+                {
+                    TabControlMain.Items.Remove(u);
+                    if (TabControlMain.Items.IsEmpty)
+                    {
+                        this.Close();
+                    }
+                }
+            }
         }
     }
 }
