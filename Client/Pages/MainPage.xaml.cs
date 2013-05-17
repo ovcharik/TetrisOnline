@@ -36,7 +36,7 @@ namespace Client.Pages
             Models.User u = l.SelectedItem as Models.User;
             if (u != null)
             {
-                MessageWindow.Instance.AddUser(u);
+                MessageWindow.Instance.AddUser(u, true);
             }
         }
     }

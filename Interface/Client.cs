@@ -32,7 +32,7 @@ namespace Interface
                                     this.MessageReceiver();
                                 }
                             }
-                            catch (ThreadAbortException te) { }
+                            catch (ThreadAbortException) { }
                             catch (Exception se)
                             {
                                 if (this.RaiseReceiveStoped != null) this.RaiseReceiveStoped(this, se);
@@ -120,11 +120,13 @@ namespace Interface
         public event EventHandler<Exception> RaiseReceiveStoped;
         public event EventHandler<String> RaiseSignIn;
         public event EventHandler<String> RaiseSignOut;
+        public event EventHandler<String> RaiseSendMsg;
 
         public event EventHandler<String> RaiseSignedIn;
         public event EventHandler<String> RaiseSignedOut;
         public event EventHandler<String> RaiseUpdateUserId;
         public event EventHandler<String> RaiseUpdateUserList;
+        public event EventHandler<String> RaiseSendedMsg;
 
         private void EventRoute(Int32 e, String j)
         {
@@ -136,6 +138,9 @@ namespace Interface
                     break;
                 case Events.SIGN_OUT:
                     if (RaiseSignOut != null) RaiseSignOut(this, j);
+                    break;
+                case Events.SEND_MSG:
+                    if (RaiseSendMsg != null) RaiseSendMsg(this, j);
                     break;
 
                     // from server
@@ -150,6 +155,9 @@ namespace Interface
                     break;
                 case Events.UPDATE_USER_LIST:
                     if (RaiseUpdateUserList != null) RaiseUpdateUserList(this, j);
+                    break;
+                case Events.SENDED_MSG:
+                    if (RaiseSendedMsg != null) RaiseSendedMsg(this, j);
                     break;
             }
         }

@@ -35,5 +35,23 @@ namespace Client
             }
         }
 
+        public static void SendMsg(Int32 id, String data)
+        {
+            JsonMessageObject jmo = new JsonMessageObject
+            {
+                UserId = id,
+                Data = data
+            };
+
+            try
+            {
+                Connection.Client.Send(Events.SEND_MSG, JsonConvert.SerializeObject(jmo));
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
     }
 }

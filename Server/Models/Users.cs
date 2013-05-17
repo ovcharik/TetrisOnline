@@ -75,5 +75,17 @@ namespace Server.Models
 
             this._update_list.Add(json);
         }
+
+        public void SendedMsg(User user, JsonMessageObject jmo)
+        {
+            User u = this._users[jmo.UserId];
+            if (u != null)
+            {
+                jmo.UserId = user.Id;
+                jmo.DateTime = DateTime.Now;
+                u.SendMessage(Events.SENDED_MSG, JsonConvert.SerializeObject(jmo));
+                Console.WriteLine("{0} ({1}) sended message to {2} ({3})", user.Name, user.Id, u.Name, u.Id);
+            }
+        }
     }
 }

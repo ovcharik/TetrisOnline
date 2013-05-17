@@ -8,6 +8,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interface", "Interface\Interface.csproj", "{A52CC7EE-A4F7-433C-B52B-ED1A728BCB96}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{38FF86C5-736F-47DD-9464-095C69CC9392}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BF87997C-2464-4EAE-B57E-1253001C6D2D} = {BF87997C-2464-4EAE-B57E-1253001C6D2D}
+		{519F8983-E1AC-41A5-BA0C-EB37883A049E} = {519F8983-E1AC-41A5-BA0C-EB37883A049E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

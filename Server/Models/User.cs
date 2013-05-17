@@ -48,6 +48,7 @@ namespace Server.Models
 
             this._client.RaiseSignIn += SignIn;
             this._client.RaiseSignOut += SignOut;
+            this._client.RaiseSendMsg += SendMessage;
             this._client.RaiseReceiveStoped += ReceiveStoped;
         }
 
@@ -70,6 +71,12 @@ namespace Server.Models
             this._socket.Close();
             this._socket.Dispose();
             if (this.Users != null) this.Users.SignedOut(this);
+        }
+
+        void SendMessage(object sender, String j)
+        {
+            Interface.Json.JsonMessageObject json = JsonConvert.DeserializeObject<Interface.Json.JsonMessageObject>(j);
+            this.Users.SendedMsg(this, json);
         }
 
         void ReceiveStoped(object sender, Exception se)

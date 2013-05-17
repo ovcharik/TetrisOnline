@@ -130,6 +130,14 @@
       <Project>{a52cc7ee-a4f7-433c-b52b-ed1a728bcb96}</Project>
       <Name>Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServerTest\ServerTest.csproj">
+      <Project>{bf87997c-2464-4eae-b57e-1253001c6d2d}</Project>
+      <Name>ServerTest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Server\Server.csproj">
+      <Project>{519f8983-e1ac-41a5-ba0c-eb37883a049e}</Project>
+      <Name>Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -36,6 +36,7 @@ namespace Client
             _Client.RaiseSignedOut += _Data.OnRaiseSignedOut;
             _Client.RaiseUpdateUserId += _Data.OnRaiseUpdateId;
             _Client.RaiseUpdateUserList += _Data.OnRaiseUpdateUserList;
+            _Client.RaiseSendedMsg += _Data.OnRaiseSendedMsg;
         }
 
         public Interface.Client Client

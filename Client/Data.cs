@@ -83,5 +83,35 @@ namespace Client
                 }
             });
         }
+
+        public void OnRaiseSendedMsg(object sender, String json)
+        {
+            JsonMessageObject msg = JsonConvert.DeserializeObject<JsonMessageObject>(json);
+            Dispatcher.Invoke(delegate
+            {
+                Models.User user = null;
+                foreach (var u in this._Users)
+                {
+                    if (u.Id == msg.UserId)
+                    {
+                        user = u;
+                        break;
+                    }
+                }
+                Models.Message m = new Models.Message
+                {
+                    Data = msg.Data,
+                    DateTime = msg.DateTime,
+                    Direction = Models.Direction.Input,
+                    User = user
+                };
+                user.AddMessage(m);
+
+                if (user != null)
+                {
+                    MessageWindow.Instance.AddUser(user);
+                }
+            });
+        }
     }
 }
