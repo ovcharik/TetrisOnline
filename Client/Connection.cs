@@ -62,8 +62,11 @@ namespace Client
 
         public void Dispose()
         {
-            this._socket.Close();
-            this._socket.Dispose();
+            if (this._socket != null)
+            {
+                this._socket.Close();
+                this._socket.Dispose();
+            }
             this._client.Dispose();
         }
     }
