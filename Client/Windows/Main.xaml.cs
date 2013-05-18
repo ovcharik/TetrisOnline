@@ -1,45 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Client
+namespace Client.Windows
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Main : Window
     {
-        public Pages.SignInPage SignInPage;
-        public Pages.MainPage MainPage;
-
-        public Connection Connection { get; set; }
-
-        public MainWindow()
+        public Main()
         {
             InitializeComponent();
 
-            SignInPage = new Pages.SignInPage(this);
-            MainPage = new Pages.MainPage(this);
+            SignInPage = new MainPages.SignIn(this);
+            MainPage = new MainPages.Main(this);
 
-            Connection = Connection.Instance;
+            Connection = ServerSide.Connection.Instance;
             Connection.Data.Dispatcher = Dispatcher;
 
-            Connection.Client.RaiseUpdateUserId += SignInPage.OnRaiseUpdateId;
-            Connection.Client.RaiseReceiveStoped += OnRaiseReceiveStoped;
+            Connection.ClientSide.RaiseUpdateUserId += SignInPage.OnRaiseUpdateId;
+            Connection.ClientSide.RaiseReceiveStoped += OnRaiseReceiveStoped;
         }
 
+        // Properties
+        public MainPages.SignIn SignInPage;
+        public MainPages.Main MainPage;
+        public ServerSide.Connection Connection { get; set; }
+
+        // Form Events Handlers
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
         {
             this.MainFrame.Content = this.SignInPage;
@@ -50,6 +39,7 @@ namespace Client
             this.Connection.Dispose();
         }
 
+        // Server Events Handlers
         public void OnRaiseReceiveStoped(object sender, Exception e)
         {
             Dispatcher.Invoke(delegate

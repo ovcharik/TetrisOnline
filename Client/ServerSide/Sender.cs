@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Newtonsoft;
-using Newtonsoft.Json;
-using Interface;
+﻿using Interface;
 using Interface.Json;
+using Newtonsoft.Json;
+using System;
 
-namespace Client
+namespace Client.ServerSide
 {
-    static class Sender
+    static public class Sender
     {
-        private static Connection Connection
-        {
-            get { return Connection.Instance; }
-        }
+        private static Connection _Connection { get { return Connection.Instance; } }
 
         public static void SignIn(String name)
         {
@@ -27,7 +18,7 @@ namespace Client
 
             try
             {
-                Connection.Client.Send(Events.SIGN_IN, JsonConvert.SerializeObject(j));
+                _Connection.ClientSide.Send(Events.SIGN_IN, JsonConvert.SerializeObject(j));
             }
             catch (Exception e)
             {
@@ -45,7 +36,7 @@ namespace Client
 
             try
             {
-                Connection.Client.Send(Events.SEND_MSG, JsonConvert.SerializeObject(jmo));
+                _Connection.ClientSide.Send(Events.SEND_MSG, JsonConvert.SerializeObject(jmo));
             }
             catch (Exception e)
             {

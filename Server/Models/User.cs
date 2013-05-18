@@ -1,65 +1,63 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-
-using Newtonsoft;
-using Newtonsoft.Json;
-
-using Interface;
+﻿using Interface;
 using Interface.Json;
+using Newtonsoft.Json;
+using System;
+using System.Net.Sockets;
 
 namespace Server.Models
 {
     class User
     {
-        private const string Anonymous = "Anonymous";
+        public User(Socket socket)
+        {
+            this._Socket = socket;
+            this._Id = this.GetHashCode();
+            this._ClientSide = new ClientSide();
+            this._ClientSide.Socket = socket;
 
-        private String _name;
+            this._ClientSide.RaiseSignIn += OnRaiseSignIn;
+            this._ClientSide.RaiseSignOut += OnRaiseSignOut;
+            this._ClientSide.RaiseSendMsg += OnRaiseSendMsg;
+            this._ClientSide.RaiseReceiveStoped += OnRaiseReceiveStoped;
+
+            this._Name = null;
+        }
+
+        // Properties
+        private const string _AnonymousName = "Anonymous";
+
+        private String _Name;
         public String Name
         {
-            get { return this._name; }
+            get { return this._Name; }
         }
 
-        private Client _client;
-        public Client Client
+        private ClientSide _ClientSide;
+        public ClientSide ClientSide
         {
-            get { return this._client; }
+            get { return this._ClientSide; }
         }
 
-        private Int32 _id;
+        private Int32 _Id;
         public Int32 Id
         { 
-            get { return this._id; }
+            get { return this._Id; }
         }
 
-        private Socket _socket;
+        private Socket _Socket;
         public Socket Socket
         {
-            get { return this._socket; }
+            get { return this._Socket; }
         }
 
         public Users Users { get; set; }
 
-        public User(Socket socket)
-        {
-            this._socket = socket;
-            this._id = this.GetHashCode();
-            this._client = new Client();
-            this._client.Socket = socket;
-
-            this._client.RaiseSignIn += SignIn;
-            this._client.RaiseSignOut += SignOut;
-            this._client.RaiseSendMsg += SendMessage;
-            this._client.RaiseReceiveStoped += ReceiveStoped;
-
-            this._name = null;
-        }
-
+        // Public Methods
         public void SendMessage(Int32 e, String j)
         {
             try
             {
-                this._client.Send(e, j);
+                this._ClientSide.Send(e, j);
             }
             catch (Exception ex)
             {
@@ -67,31 +65,32 @@ namespace Server.Models
             }
         }
 
-        void SignIn(object sender, String j)
+        // Event Handlers
+        private void OnRaiseSignIn(object sender, String j)
         {
             Interface.Json.JsonBaseObject json = JsonConvert.DeserializeObject<Interface.Json.JsonBaseObject>(j);
             String n = json.String;
-            if (n == null || n.Length == 0) n = Anonymous;
-            this._name = n;
+            if (n == null || n.Length == 0) n = _AnonymousName;
+            this._Name = n;
             if (this.Users != null) this.Users.SignedIn(this);
         }
 
-        void SignOut(object sender, String j)
+        private void OnRaiseSignOut(object sender, String j)
         {
-            this._socket.Close();
-            this._socket.Dispose();
+            this._Socket.Close();
+            this._Socket.Dispose();
             if (this.Users != null) this.Users.SignedOut(this);
         }
 
-        void SendMessage(object sender, String j)
+        private void OnRaiseSendMsg(object sender, String j)
         {
-            Interface.Json.JsonMessageObject json = JsonConvert.DeserializeObject<Interface.Json.JsonMessageObject>(j);
+            JsonMessageObject json = JsonConvert.DeserializeObject<JsonMessageObject>(j);
             this.Users.SendedMsg(this, json);
         }
 
-        void ReceiveStoped(object sender, Exception se)
+        void OnRaiseReceiveStoped(object sender, Exception se)
         {
-            SignOut(sender, "");
+            OnRaiseSignOut(sender, "");
         }
     }
 }

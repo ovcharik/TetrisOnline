@@ -57,15 +57,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Data.cs" />
-    <Compile Include="MessageWindow.xaml.cs">
-      <DependentUpon>MessageWindow.xaml</DependentUpon>
+    <Compile Include="ServerSide\Data.cs" />
+    <Compile Include="Windows\Messages.xaml.cs">
+      <DependentUpon>Messages.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Colors.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Sender.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="ServerSide\Sender.cs" />
+    <Page Include="Windows\Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -73,30 +73,30 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Windows\Main.xaml.cs">
+      <DependentUpon>Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MessageWindow.xaml">
+    <Page Include="Windows\Messages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MainPage.xaml">
+    <Page Include="Windows\MainPages\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\SignInPage.xaml">
+    <Page Include="Windows\MainPages\SignIn.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection.cs" />
-    <Compile Include="Pages\MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
+    <Compile Include="ServerSide\Connection.cs" />
+    <Compile Include="Windows\MainPages\Main.xaml.cs">
+      <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\SignInPage.xaml.cs">
-      <DependentUpon>SignInPage.xaml</DependentUpon>
+    <Compile Include="Windows\MainPages\SignIn.xaml.cs">
+      <DependentUpon>SignIn.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -139,6 +139,7 @@
       <Name>Server</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

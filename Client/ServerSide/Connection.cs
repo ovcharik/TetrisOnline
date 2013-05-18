@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Net;
-using System.Net.Sockets;
-
-namespace Client
+namespace Client.ServerSide
 {
+    // Singleton
     public class Connection
     {
         private static Connection _instance = null;
@@ -21,29 +21,28 @@ namespace Client
             }
         }
 
+        private Connection()
+        {
+            this._ClientSide = new Interface.ClientSide();
+            this._Data = new Data();
+
+            _ClientSide.RaiseSignedIn += _Data.OnRaiseSignedIn;
+            _ClientSide.RaiseSignedOut += _Data.OnRaiseSignedOut;
+            _ClientSide.RaiseUpdateUserId += _Data.OnRaiseUpdateId;
+            _ClientSide.RaiseUpdateUserList += _Data.OnRaiseUpdateUserList;
+            _ClientSide.RaiseSendedMsg += _Data.OnRaiseSendedMsg;
+        }
+
+        // Properties
         private Data _Data;
         public Data Data { get { return _Data; } }
 
-        private Interface.Client _Client;
+        private Interface.ClientSide _ClientSide;
+        public Interface.ClientSide ClientSide { get { return this._ClientSide; } }
+
         private Socket _socket;
 
-        private Connection()
-        {
-            this._Client = new Interface.Client();
-            this._Data = new Data();
-
-            _Client.RaiseSignedIn += _Data.OnRaiseSignedIn;
-            _Client.RaiseSignedOut += _Data.OnRaiseSignedOut;
-            _Client.RaiseUpdateUserId += _Data.OnRaiseUpdateId;
-            _Client.RaiseUpdateUserList += _Data.OnRaiseUpdateUserList;
-            _Client.RaiseSendedMsg += _Data.OnRaiseSendedMsg;
-        }
-
-        public Interface.Client Client
-        {
-            get { return this._Client; }
-        }
-
+        // Public Methods
         public void Connect(String host, String port)
         {
             this.Disconnect();
@@ -53,7 +52,7 @@ namespace Client
             ips = Dns.GetHostAddresses(host);
             this._socket.Connect(ips, Convert.ToInt32(port));
 
-            this._Client.Socket = this._socket;
+            this._ClientSide.Socket = this._socket;
         }
 
         public void Disconnect()
@@ -72,7 +71,7 @@ namespace Client
                 this._socket.Close();
                 this._socket.Dispose();
             }
-            this._Client.Dispose();
+            this._ClientSide.Dispose();
         }
     }
 }

@@ -1,36 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.Net;
-using System.Net.Sockets;
-
-using Interface;
+﻿using Interface;
 using Interface.Json;
-
-using Newtonsoft;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace Server.Models
 {
     class Users
     {
-        public Server Server { set; get; }
-
-        private Dictionary<Int32, User> _users;
-
-        public Users()
+        public Users(Server server)
         {
-            this._users = new Dictionary<Int32, User>();
+            this._Users = new Dictionary<Int32, User>();
+            this._Server = server;
         }
 
+        // Properties
+        private Server _Server;
+        public Server Server { get { return this._Server; } }
+
+        private Dictionary<Int32, User> _Users;
+
+        // Public Methods
         public void Add(User user)
         {
-            lock (this._users)
+            lock (this._Users)
             {
-                this._users.Add(user.Id, user);
+                this._Users.Add(user.Id, user);
             }
             user.Users = this;
         }
@@ -38,9 +33,9 @@ namespace Server.Models
         public void Broadcast(Int32 e, String j, User u = null)
         {
             Console.WriteLine("UserList Broadcast: {0} - {1}", Events.EventToString(e), j);
-            lock (this._users)
+            lock (this._Users)
             {
-                foreach (var user in this._users.Values)
+                foreach (var user in this._Users.Values)
                 {
                     if (user != u) user.SendMessage(e, j);
                 }
@@ -50,9 +45,9 @@ namespace Server.Models
         public void SignedOut(User user)
         {
             Int32 id = user.Id;
-            lock (this._users)
+            lock (this._Users)
             {
-                this._users.Remove(id);
+                this._Users.Remove(id);
             }
 
             if (user.Name != null)
@@ -76,10 +71,10 @@ namespace Server.Models
 
             this.Broadcast(Events.SIGNED_IN, s, user);
             user.SendMessage(Events.UPDATE_ID, s);
-               List<JsonBaseObject> ul = new List<JsonBaseObject>();
-            lock (this._users)
+            List<JsonBaseObject> ul = new List<JsonBaseObject>();
+            lock (this._Users)
             {
-                foreach (var u in this._users.Values)
+                foreach (var u in this._Users.Values)
                 {
                     if (u == user) continue;
                     ul.Add(new JsonBaseObject
@@ -97,7 +92,7 @@ namespace Server.Models
             User u;
             try
             {
-                u = this._users[jmo.UserId];
+                u = this._Users[jmo.UserId];
             }
             catch (Exception e)
             {

@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft;
 using Newtonsoft.Json;
 
 namespace Interface.Json

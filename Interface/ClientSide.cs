@@ -1,15 +1,21 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
 namespace Interface
 {
-    public class Client
+    public class ClientSide
     {
-        private Thread receiveThread;
+        public ClientSide()
+        {
+            this.Socket = null;
+        }
+
+        // Properties
+        private Thread _ReceivingThread;
+
         private Socket _socket;
         public Socket Socket 
         {
@@ -21,15 +27,15 @@ namespace Interface
             {
                 if (this._socket != value)
                 {
-                    if (this.receiveThread != null) this.receiveThread.Abort();
+                    if (this._ReceivingThread != null) this._ReceivingThread.Abort();
                     this._socket = value;
-                    this.receiveThread = new Thread(delegate()
+                    this._ReceivingThread = new Thread(delegate()
                         {
                             try
                             {
                                 while (this.Socket.Connected)
                                 {
-                                    this.MessageReceiver();
+                                    this._MessageReceiver();
                                 }
                             }
                             catch (ThreadAbortException) { }
@@ -38,17 +44,25 @@ namespace Interface
                                 if (this.RaiseReceiveStoped != null) this.RaiseReceiveStoped(this, se);
                             }
                         });
-                    this.receiveThread.Start();
+                    this._ReceivingThread.Start();
                 }
             }
         }
 
-        public Client()
-        {
-            this.Socket = null;
-        }
+        // Events
+        public event EventHandler<Exception> RaiseReceiveStoped;
 
+        public event EventHandler<String> RaiseSignIn;
+        public event EventHandler<String> RaiseSignOut;
+        public event EventHandler<String> RaiseSendMsg;
 
+        public event EventHandler<String> RaiseSignedIn;
+        public event EventHandler<String> RaiseSignedOut;
+        public event EventHandler<String> RaiseUpdateUserId;
+        public event EventHandler<String> RaiseUpdateUserList;
+        public event EventHandler<String> RaiseSendedMsg;
+
+        // Public Methods
         public void Send(Int32 e, String j)
         {
             byte[] json = Encoding.UTF8.GetBytes(j);
@@ -71,12 +85,13 @@ namespace Interface
         {
             try
             {
-                this.receiveThread.Abort();
+                this._ReceivingThread.Abort();
             }
             catch { }
         }
 
-        private void MessageReceiver()
+        // Private Methods
+        private void _MessageReceiver()
         {
             Int32 e;
             String j;
@@ -104,24 +119,12 @@ namespace Interface
 
             Thread th = new Thread(delegate()
             {
-                this.EventRoute(e, j);
+                this._EventRoute(e, j);
             });
             th.Start();
         }
 
-        // Events
-        public event EventHandler<Exception> RaiseReceiveStoped;
-        public event EventHandler<String> RaiseSignIn;
-        public event EventHandler<String> RaiseSignOut;
-        public event EventHandler<String> RaiseSendMsg;
-
-        public event EventHandler<String> RaiseSignedIn;
-        public event EventHandler<String> RaiseSignedOut;
-        public event EventHandler<String> RaiseUpdateUserId;
-        public event EventHandler<String> RaiseUpdateUserList;
-        public event EventHandler<String> RaiseSendedMsg;
-
-        private void EventRoute(Int32 e, String j)
+        private void _EventRoute(Int32 e, String j)
         {
             switch (e)
             {

@@ -1,52 +1,44 @@
-﻿using System;
-using System.Collections;
+﻿using Server.Models;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using Newtonsoft.Json;
-
-using Server.Models;
-using Interface;
-using Interface.Json;
 
 namespace Server
 {
     class Server
     {
-        private Users _users;
-
-        private List<Thread> _threads;
-
-        private IPAddress _address;
-        private int _port;
-
-        private Boolean _isServerRunning;
-        public Boolean isServerRunning
-        {
-            get { return this._isServerRunning; }
-        }
-        private Socket _listener;
-
         public Server(IPAddress address, int port)
         {
-            this._users = new Users();
-            this._users.Server = this;
+            this._Users = new Users(this);
 
-            this._threads = new List<Thread>();
+            this._UserThreads = new List<Thread>();
 
-            this._port = port;
-            this._address = address;
+            this._Port = port;
+            this._IPAddress = address;
 
-            this._listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            this._listener.Bind(new IPEndPoint(this._address, this._port));
+            this._Listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this._Listener.Bind(new IPEndPoint(this._IPAddress, this._Port));
         }
 
+        // Properties
+        private Users _Users;
+
+        private List<Thread> _UserThreads;
+
+        private IPAddress _IPAddress;
+        private int _Port;
+
+        private Boolean _isServerRunning;
+        public Boolean isServerRunning { get { return this._isServerRunning; } }
+
+        private Socket _Listener;
+
+        // Public Methods
         public void Start()
         {
-            this._listener.Listen(50);
+            this._Listener.Listen(50);
             this._isServerRunning = true;
             this.SocketAccepter().Start();
             Console.WriteLine("Server started");
@@ -56,20 +48,21 @@ namespace Server
         {
             if (this.isServerRunning)
             {
-                this._listener.Close();
+                this._Listener.Close();
                 this._isServerRunning = false;
             }
         }
 
+        // Private Methods
         private Thread SocketAccepter()
         {
             Thread th = new Thread(delegate()
                 {
                     while (this.isServerRunning)
                     {
-                        Socket sock = this._listener.Accept();
+                        Socket sock = this._Listener.Accept();
                         User user = new User(sock);
-                        this._users.Add(user);
+                        this._Users.Add(user);
                         Thread.Sleep(1);
                         Console.WriteLine("Client {0} accepted, ID: {1}", sock.LocalEndPoint.ToString(), user.Id);
                     }

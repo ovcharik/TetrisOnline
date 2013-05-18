@@ -1,33 +1,30 @@
-﻿using System;
+﻿using Interface.Json;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
 using System.Windows.Threading;
 
-using Newtonsoft;
-using Newtonsoft.Json;
-
-using Interface;
-using Interface.Json;
-
-namespace Client
+namespace Client.ServerSide
 {
     public class Data
     {
-        Models.User _CurentUser;
-        public Models.User CurentUser { get { return this._CurentUser; } }
-
-        ObservableCollection<Models.User> _Users;
-        public ObservableCollection<Models.User> Users { get { return _Users; } }
-
-        public Dispatcher Dispatcher { get; set; }
-
         public Data()
         {
             _CurentUser = null;
             _Users = new ObservableCollection<Models.User>();
         }
 
+        // Properties
+        private Models.User _CurentUser;
+        public Models.User CurentUser { get { return this._CurentUser; } }
+
+        private ObservableCollection<Models.User> _Users;
+        public ObservableCollection<Models.User> Users { get { return _Users; } }
+
+        public Dispatcher Dispatcher { get; set; }
+
+        // Server Event Handlers
         public void OnRaiseUpdateId(object sender, String json)
         {
             JsonBaseObject jbo = JsonConvert.DeserializeObject<JsonBaseObject>(json);
@@ -109,7 +106,7 @@ namespace Client
 
                 if (user != null)
                 {
-                    MessageWindow.Instance.AddUser(user);
+                    Windows.Messages.Instance.AddUser(user);
                 }
             });
         }
