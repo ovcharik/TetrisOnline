@@ -6,6 +6,7 @@ using Newtonsoft;
 using Newtonsoft.Json;
 
 using Interface;
+using Interface.Json;
 
 namespace Server.Models
 {
@@ -50,11 +51,20 @@ namespace Server.Models
             this._client.RaiseSignOut += SignOut;
             this._client.RaiseSendMsg += SendMessage;
             this._client.RaiseReceiveStoped += ReceiveStoped;
+
+            this._name = null;
         }
 
         public void SendMessage(Int32 e, String j)
         {
-            this._client.Send(e, j);
+            try
+            {
+                this._client.Send(e, j);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("# Error: {0}", ex.Message);
+            }
         }
 
         void SignIn(object sender, String j)
@@ -83,6 +93,5 @@ namespace Server.Models
         {
             SignOut(sender, "");
         }
-
     }
 }

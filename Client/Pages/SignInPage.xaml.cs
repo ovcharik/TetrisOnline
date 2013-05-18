@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -29,26 +30,37 @@ namespace Client.Pages
 
         private void buttonSignIn_Click(object sender, RoutedEventArgs e)
         {
+            this.buttonSignIn.IsEnabled = false;
+
             String host = this.textBoxHost.Text;
             String port = this.textBoxPort.Text;
             String name = this.textBoxName.Text;
-
-            try
-            {
-                this.Owner.Connection.Connect(host, port);
-                Sender.SignIn(name);
-            }
-            catch (Exception ex)
-            {
-                this.textBoxAlert.Text = ex.Message;
-                this.textBoxAlert.Visibility = Visibility.Visible;
-            }
+            
+            // Говно какое то
+            new Thread(delegate()
+                {
+                    try
+                    {
+                        this.Owner.Connection.Connect(host, port);
+                        Sender.SignIn(name);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Dispatcher.Invoke(delegate
+                        {
+                            this.textBoxAlert.Text = ex.Message;
+                            this.textBoxAlert.Visibility = Visibility.Visible;
+                            this.buttonSignIn.IsEnabled = true;
+                        });
+                    }
+                }).Start();
         }
 
         public void OnRaiseUpdateId(object sender, String json)
         {
             this.Dispatcher.Invoke(delegate {
                 NavigationService.Navigate(this.Owner.MainPage);
+                this.buttonSignIn.IsEnabled = true;
             });
         }
     }

@@ -48,16 +48,10 @@ namespace Client
         {
             this.Disconnect();
             IPAddress[] ips;
-            try
-            {
-                this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                ips = Dns.GetHostAddresses(host);
-                this._socket.Connect(ips, Convert.ToInt32(port));
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+
+            this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ips = Dns.GetHostAddresses(host);
+            this._socket.Connect(ips, Convert.ToInt32(port));
 
             this._Client.Socket = this._socket;
         }

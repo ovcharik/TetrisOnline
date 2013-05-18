@@ -51,27 +51,20 @@ namespace Interface
 
         public void Send(Int32 e, String j)
         {
-            try
-            {
-                byte[] json = Encoding.UTF8.GetBytes(j);
-                byte[] size = BitConverter.GetBytes(json.Length);
-                byte[] even = BitConverter.GetBytes(e);
+            byte[] json = Encoding.UTF8.GetBytes(j);
+            byte[] size = BitConverter.GetBytes(json.Length);
+            byte[] even = BitConverter.GetBytes(e);
 
-                Stream s = new MemoryStream();
-                s.Write(even, 0, even.Length);
-                s.Write(size, 0, size.Length);
-                s.Write(json, 0, json.Length);
+            Stream s = new MemoryStream();
+            s.Write(even, 0, even.Length);
+            s.Write(size, 0, size.Length);
+            s.Write(json, 0, json.Length);
 
-                byte[] data = new byte[s.Length];
-                s.Position = 0;
-                s.Read(data, 0, data.Length);
+            byte[] data = new byte[s.Length];
+            s.Position = 0;
+            s.Read(data, 0, data.Length);
 
-                this.Socket.Send(data);
-            }
-            catch (Exception se)
-            {
-                throw se;
-            }
+            this.Socket.Send(data);
         }
 
         public void Dispose()

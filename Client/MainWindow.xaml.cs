@@ -54,7 +54,7 @@ namespace Client
         {
             Dispatcher.Invoke(delegate
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(e.Message);
                 this.Connection.Disconnect();
                 this.MainFrame.Content = this.SignInPage;
             });

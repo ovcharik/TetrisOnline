@@ -21,34 +21,39 @@ namespace Server.Models
 
         private Dictionary<Int32, User> _users;
 
-        private List<JsonBaseObject> _update_list;
-
         public Users()
         {
             this._users = new Dictionary<Int32, User>();
-            this._update_list = new List<JsonBaseObject>();
         }
 
         public void Add(User user)
         {
-            this._users.Add(user.Id, user);
+            lock (this._users)
+            {
+                this._users.Add(user.Id, user);
+            }
             user.Users = this;
         }
 
         public void Broadcast(Int32 e, String j, User u = null)
         {
             Console.WriteLine("UserList Broadcast: {0} - {1}", Events.EventToString(e), j);
-            foreach (var user in this._users.Values)
+            lock (this._users)
             {
-                if (user != u) user.SendMessage(e, j);
+                foreach (var user in this._users.Values)
+                {
+                    if (user != u) user.SendMessage(e, j);
+                }
             }
         }
 
         public void SignedOut(User user)
         {
             Int32 id = user.Id;
-            this._users.Remove(id);
-            this._update_list.Remove(this._update_list.Find(delegate(JsonBaseObject u) { return id == u.Int; }));
+            lock (this._users)
+            {
+                this._users.Remove(id);
+            }
 
             if (user.Name != null)
             {
@@ -71,14 +76,34 @@ namespace Server.Models
 
             this.Broadcast(Events.SIGNED_IN, s, user);
             user.SendMessage(Events.UPDATE_ID, s);
-            user.SendMessage(Events.UPDATE_USER_LIST, JsonConvert.SerializeObject(this._update_list));
-
-            this._update_list.Add(json);
+               List<JsonBaseObject> ul = new List<JsonBaseObject>();
+            lock (this._users)
+            {
+                foreach (var u in this._users.Values)
+                {
+                    if (u == user) continue;
+                    ul.Add(new JsonBaseObject
+                    {
+                        Int = u.Id,
+                        String = u.Name
+                    });
+                }
+            }
+            user.SendMessage(Events.UPDATE_USER_LIST, JsonConvert.SerializeObject(ul));
         }
 
         public void SendedMsg(User user, JsonMessageObject jmo)
         {
-            User u = this._users[jmo.UserId];
+            User u;
+            try
+            {
+                u = this._users[jmo.UserId];
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("# Error: {0}", e.Message);
+                return;
+            }
             if (u != null)
             {
                 jmo.UserId = user.Id;
