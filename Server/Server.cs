@@ -12,6 +12,7 @@ namespace Server
         public Server(IPAddress address, int port)
         {
             this._Users = new Users(this);
+            this._Rooms = new Rooms(this._Users);
 
             this._UserThreads = new List<Thread>();
 
@@ -24,6 +25,7 @@ namespace Server
 
         // Properties
         private Users _Users;
+        private Rooms _Rooms;
 
         private List<Thread> _UserThreads;
 
@@ -61,7 +63,7 @@ namespace Server
                     while (this.isServerRunning)
                     {
                         Socket sock = this._Listener.Accept();
-                        User user = new User(sock);
+                        User user = new User(sock, this._Users, this._Rooms);
                         this._Users.Add(user);
                         Thread.Sleep(1);
                         Console.WriteLine("Client {0} accepted, ID: {1}", sock.LocalEndPoint.ToString(), user.Id);

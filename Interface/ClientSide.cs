@@ -55,6 +55,12 @@ namespace Interface
         public event EventHandler<String> RaiseSignIn;
         public event EventHandler<String> RaiseSignOut;
         public event EventHandler<String> RaiseSendMsg;
+        public event EventHandler<String> RaiseCreateRoom;
+        public event EventHandler<String> RaiseEnterRoom;
+        public event EventHandler<String> RaiseWatchRoom;
+        public event EventHandler<String> RaiseLeaveRoom;
+        public event EventHandler<String> RaiseNotWatchRoom;
+        public event EventHandler<String> RaiseRoomSendMsg;
 
         public event EventHandler<String> RaiseSignedIn;
         public event EventHandler<String> RaiseSignedOut;
@@ -137,6 +143,24 @@ namespace Interface
                     break;
                 case Events.SEND_MSG:
                     if (RaiseSendMsg != null) RaiseSendMsg(this, j);
+                    break;
+                case Events.CREATE_ROOM:
+                    if (RaiseCreateRoom != null) RaiseCreateRoom(this, j);
+                    break;
+                case Events.ENTER_ROOM:
+                    if (RaiseEnterRoom != null) RaiseEnterRoom(this, j);
+                    break;
+                case Events.LEAVE_ROOM:
+                    if (RaiseLeaveRoom != null) RaiseLeaveRoom(this, j);
+                    break;
+                case Events.WATCH_ROOM:
+                    if (RaiseWatchRoom != null) RaiseWatchRoom(this, j);
+                    break;
+                case Events.NOTWATCH_ROOM:
+                    if (RaiseNotWatchRoom != null) RaiseNotWatchRoom(this, j);
+                    break;
+                case Events.ROOM_SEND_MSG:
+                    if (RaiseRoomSendMsg != null) RaiseRoomSendMsg(this, j);
                     break;
 
                     // from server

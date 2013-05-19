@@ -27,7 +27,6 @@ namespace Server.Models
             {
                 this._Users.Add(user.Id, user);
             }
-            user.Users = this;
         }
 
         public void Broadcast(Int32 e, String j, User u = null)

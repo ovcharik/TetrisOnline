@@ -42,7 +42,9 @@
     <Compile Include="ClientSide.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Json\JsonBaseObject.cs" />
+    <Compile Include="Json\JsonFigure.cs" />
     <Compile Include="Json\JsonMessageObject.cs" />
+    <Compile Include="Json\JsonRoom.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

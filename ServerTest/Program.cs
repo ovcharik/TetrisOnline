@@ -78,8 +78,16 @@ namespace ServerTest
             Console.WriteLine("Json: {0}", s_json);
             Send(Events.SIGN_IN, s_json);
 
-            name = Console.ReadLine();
+            Console.ReadLine();
+            json.Int = 7;
+            json.String = "Ololo";
+            s_json = JsonConvert.SerializeObject(json);
+            Console.WriteLine("Json: {0}", s_json);
+            Send(Events.CREATE_ROOM, s_json);
+
+            Console.ReadLine();
             listener.Close();
+
             Console.Write("Press any key...");
             Console.ReadKey(true);
         }
