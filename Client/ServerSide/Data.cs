@@ -47,14 +47,22 @@ namespace Client.ServerSide
             foreach (var mid in jr.Members)
             {
                 Models.User m = _Users.FirstOrDefault(u => u.Id == mid);
-                if (m != null) r.Members.Add(m);
+                if (m != null)
+                {
+                    m.Room = r;
+                    r.Members.Add(m);
+                }
             }
 
             List<Models.User> ws = new List<Models.User>();
             foreach (var wid in jr.Watchers)
             {
                 Models.User w = _Users.FirstOrDefault(u => u.Id == wid);
-                if (w != null) r.Watchers.Add(w);
+                if (w != null)
+                {
+                    w.Room = r;
+                    r.Watchers.Add(w);
+                }
             }
 
             return r;
@@ -123,6 +131,11 @@ namespace Client.ServerSide
                 lock (this._Users)
                 {
                     if (u != null) this.Users.Remove(u);
+                    if (u.Room != null)
+                    {
+                        u.Room.Leaved(u);
+                        u.Room.NotWatched(u);
+                    }
                     if (u == CurentUser)
                     {
                         this._CurentUser = null;
@@ -214,6 +227,7 @@ namespace Client.ServerSide
                     if (r != null && u != null)
                     {
                         r.Entered(u);
+                        u.Room = r;
                         if (u == CurentUser)
                         {
                             this._CurrentRole = Models.Role.Member;
@@ -237,6 +251,7 @@ namespace Client.ServerSide
                     if (r != null && u != null)
                     {
                         r.Watched(u);
+                        u.Room = r;
                         if (u == CurentUser)
                         {
                             this._CurrentRole = Models.Role.Watcher;

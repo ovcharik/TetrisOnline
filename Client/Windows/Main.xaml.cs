@@ -16,14 +16,16 @@ namespace Client.Windows
 #if DEBUG
             this.Title += " - DEBUG VERSION";
 #endif
-            SignInPage = new MainPages.SignIn(this);
-            MainPage = new MainPages.Main(this);
+            SignInPage = new MainPages.SignIn();
+            MainPage = new MainPages.Main();
+            RoomPage = new MainPages.Room();
 
             Connection = ServerSide.Connection.Instance;
             Connection.Data.Dispatcher = Dispatcher;
 
             ServerSide.NavigationService.RaiseGotoMainPage += GotoMainPage;
             ServerSide.NavigationService.RaiseGotoSignInPage += GotoSignInPage;
+            ServerSide.NavigationService.RaiseGotoRoomPage += GotoRoomPage;
 
             Connection.ClientSide.RaiseReceiveStoped += OnRaiseReceiveStoped;
         }
@@ -31,6 +33,7 @@ namespace Client.Windows
         // Properties
         public MainPages.SignIn SignInPage;
         public MainPages.Main MainPage;
+        public MainPages.Room RoomPage;
         public ServerSide.Connection Connection { get; set; }
 
         // Form Events Handlers
@@ -70,6 +73,7 @@ namespace Client.Windows
                 {
                     this.MainFrame.Navigate(MainPage);
                     SignInPage.buttonSignIn.IsEnabled = true;
+                    MainPage.buttonNewRoom.IsEnabled = true;
                 });
             }
             catch { }
@@ -83,6 +87,20 @@ namespace Client.Windows
                 {
                     this.MainFrame.Navigate(SignInPage);
                     SignInPage.buttonSignIn.IsEnabled = true;
+                });
+            }
+            catch { }
+        }
+
+        public void GotoRoomPage(object sender, object e)
+        {
+            try
+            {
+                this.Dispatcher.Invoke(delegate
+                {
+                    RoomPage.DataContext = Connection.Data.CurrentRoom;
+                    if (RoomPage.DataContext != null)
+                        this.MainFrame.Navigate(RoomPage);
                 });
             }
             catch { }

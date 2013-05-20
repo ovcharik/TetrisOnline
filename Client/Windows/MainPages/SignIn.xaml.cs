@@ -7,14 +7,10 @@ namespace Client.Windows.MainPages
 {
     public partial class SignIn : Page
     {
-        public SignIn(Windows.Main owner)
+        public SignIn()
         {
-            this.Owner = owner;
             InitializeComponent();
         }
-
-        // Properties
-        public Windows.Main Owner { get; set; }
 
         // Form Events
         private void buttonSignIn_Click(object sender, RoutedEventArgs e)
@@ -30,7 +26,7 @@ namespace Client.Windows.MainPages
                 {
                     try
                     {
-                        this.Owner.Connection.Connect(host, port);
+                        ServerSide.Connection.Instance.Connect(host, port);
                         ServerSide.Sender.SignIn(name);
                     }
                     catch (Exception ex)

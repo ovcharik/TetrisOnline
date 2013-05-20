@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -9,8 +10,8 @@ namespace Client.Models
     {
         public Room(Int32 id, User creator, String name, Int32 capacity, Boolean isGameStarted = false)
         {
-            this._Members = new List<User>();
-            this._Watchers = new List<User>();
+            this._Members = new ObservableCollection<User>();
+            this._Watchers = new ObservableCollection<User>();
             this._Id = id;
             this._Creator = creator;
             this._Name = name;
@@ -23,11 +24,11 @@ namespace Client.Models
         private User _Creator;
         public User Creator { get { return _Creator; } }
 
-        private List<User> _Watchers;
-        public List<User> Watchers { get { return _Watchers; } }
+        private ObservableCollection<User> _Watchers;
+        public ObservableCollection<User> Watchers { get { return _Watchers; } }
 
-        private List<User> _Members;
-        public List<User> Members { get { return _Members; } }
+        private ObservableCollection<User> _Members;
+        public ObservableCollection<User> Members { get { return _Members; } }
 
         private String _Name;
         public String Name { get { return _Name; } }

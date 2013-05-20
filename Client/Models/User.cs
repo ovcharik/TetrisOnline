@@ -46,6 +46,9 @@ namespace Client.Models
         private Boolean _isCurrent;
         public Boolean isCurrent { get { return _isCurrent; } }
 
+        public Boolean isMember { get { return (this.Room != null && this.Room.Members.Contains(this)); } }
+        public Boolean isWatcher { get { return (this.Room != null && this.Room.Watchers.Contains(this)); } }
+
         public int _NewMsgs;
         public String NewMsgs
         {
@@ -58,6 +61,8 @@ namespace Client.Models
 
         private ObservableCollection<Message> _Messages;
         public ObservableCollection<Message> Messages { get { return _Messages; } }
+
+        public Room Room { get; set; }
 
         // Public Methods
         public void AddMessage(Message msg)

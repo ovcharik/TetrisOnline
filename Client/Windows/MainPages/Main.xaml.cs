@@ -8,16 +8,12 @@ namespace Client.Windows.MainPages
 {
     public partial class Main : Page
     {
-        public Main(Windows.Main owner)
+        public Main()
         {
             InitializeComponent();
             UserList.DataContext = ServerSide.Connection.Instance.Data.Users;
             RoomList.DataContext = ServerSide.Connection.Instance.Data.Rooms;
-            Owner = owner;
         }
-
-        // Propetries
-        public Windows.Main Owner { get; set; }
 
         // Form Events Handlers
         private void ListView_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
@@ -59,6 +55,24 @@ namespace Client.Windows.MainPages
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             ServerSide.Connection.Instance.Disconnect();
+        }
+
+        private void ButtonPlay_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            if (b == null) return;
+            Models.Room r = b.DataContext as Models.Room;
+            if (r == null) return;
+            ServerSide.Sender.EnterRoom(r.Id);
+        }
+
+        private void ButtonWatch_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            if (b == null) return;
+            Models.Room r = b.DataContext as Models.Room;
+            if (r == null) return;
+            ServerSide.Sender.WatchRoom(r.Id);
         }
     }
 }

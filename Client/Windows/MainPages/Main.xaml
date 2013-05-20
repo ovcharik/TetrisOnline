@@ -6,27 +6,25 @@
       xmlns:Json="clr-namespace:Interface.Json;assembly=Interface" xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Models="clr-namespace:Client.Models" x:Class="Client.Windows.MainPages.Main" 
       mc:Ignorable="d" 
       d:DesignHeight="400" d:DesignWidth="600">
+    
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="100" MaxWidth="200"/>
             <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
         <Label Content="Users" Margin="10,10,10,0" VerticalAlignment="Top" Height="26"/>
-        <ListView x:Name="UserList" Margin="10,41,10,10" ItemsSource="{Binding}" MouseDoubleClick="ListView_MouseDoubleClick_1" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock x:Name="TextBlockUsername" Grid.Column="0" Text="{Binding Name}" Foreground="{Binding Color}" FontWeight="{Binding FontWieght}" />
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=isCurrent}" Value="True">
-                            <Setter TargetName="TextBlockUsername" Property="FontWeight" Value="Bold"/>
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <ListView x:Name="UserList" Margin="10,41,10,10" ItemsSource="{Binding}" MouseDoubleClick="ListView_MouseDoubleClick_1" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemTemplate="{StaticResource UserTextBlock}"/>
         <GridSplitter HorizontalAlignment="Left" Padding="0" Margin="0" Width="5" Grid.Column="1" ResizeDirection="Columns"/>
         <Label Content="Rooms" Grid.Column="1" Margin="15,10,117,0" VerticalAlignment="Top" Height="26"/>
-        <Button Content="New Room" Grid.Column="1" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom" Click="Button_Click_1"/>
+        <Button x:Name="buttonNewRoom" Content="New Room" Grid.Column="1" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom" Click="Button_Click_1"/>
         <TextBox x:Name="textBoxRoomName" Grid.Column="1" Margin="15,0,220,10" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom"/>
         <ComboBox x:Name="comboBoxCapacity" Grid.Column="1" Margin="0,0,90,10" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="125" SelectedIndex="2">
             <System:Int32>1</System:Int32>
@@ -59,8 +57,8 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="ButtonPlay" Content="Play" Margin="0,0,5,0" Width="40"/>
-                                    <Button Content="Watch" Width="40"/>
+                                    <Button x:Name="ButtonPlay" Content="Play" Margin="0,0,5,0" Width="40" Click="ButtonPlay_Click"/>
+                                    <Button x:Name="ButtonWatch" Content="Watch" Width="40" Click="ButtonWatch_Click"/>
                                 </StackPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding Path=isGameStarted}" Value="True">

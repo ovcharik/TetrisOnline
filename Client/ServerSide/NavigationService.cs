@@ -24,7 +24,7 @@ namespace Client.ServerSide
 
         public static void GotoRoomPage()
         {
-            if (RaiseGotoMainPage != null) RaiseGotoMainPage(null, null);
+            if (RaiseGotoMainPage != null) RaiseGotoRoomPage(null, null);
         }
     }
 }

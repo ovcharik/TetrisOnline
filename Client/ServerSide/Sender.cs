@@ -41,5 +41,35 @@ namespace Client.ServerSide
             _Connection.ClientSide.Send(Events.CREATE_ROOM, JsonConvert.SerializeObject(jbo));
         }
 
+        public static void EnterRoom(Int32 roomId)
+        {
+            JsonBaseObject jbo = new JsonBaseObject
+            {
+                Int = roomId
+            };
+
+            _Connection.ClientSide.Send(Events.ENTER_ROOM, JsonConvert.SerializeObject(jbo));
+        }
+
+        public static void WatchRoom(Int32 roomId)
+        {
+            JsonBaseObject jbo = new JsonBaseObject
+            {
+                Int = roomId
+            };
+
+            _Connection.ClientSide.Send(Events.WATCH_ROOM, JsonConvert.SerializeObject(jbo));
+        }
+
+        public static void LeaveRoom()
+        {
+            _Connection.ClientSide.Send(Events.LEAVE_ROOM, "LEAVE_ROOM");
+        }
+
+        public static void NotWatchRoom()
+        {
+            _Connection.ClientSide.Send(Events.NOTWATCH_ROOM, "NOTWATCH_ROOM");
+        }
+
     }
 }
