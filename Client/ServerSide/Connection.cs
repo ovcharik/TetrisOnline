@@ -31,6 +31,14 @@ namespace Client.ServerSide
             _ClientSide.RaiseUpdateUserId += _Data.OnRaiseUpdateId;
             _ClientSide.RaiseUpdateUserList += _Data.OnRaiseUpdateUserList;
             _ClientSide.RaiseSendedMsg += _Data.OnRaiseSendedMsg;
+            _ClientSide.RaiseUpdateRoomList += _Data.OnRaiseUpdateRoomList;
+            _ClientSide.RaiseCreatedRoom += _Data.OnRaiseCreatedRoom;
+            _ClientSide.RaiseRemovedRoom += _Data.OnRaiseRemovedRoom;
+            _ClientSide.RaiseEnteredRoom += _Data.OnRaiseEnteredRoom;
+            _ClientSide.RaiseLeavedRoom += _Data.OnRaiseLeavedRoom;
+            _ClientSide.RaiseWatchedRoom += _Data.OnRaiseWatchedRoom;
+            _ClientSide.RaiseNotWatchedRoom += _Data.OnRaiseNotWatchedRoom;
+            _ClientSide.RaiseGameStartedRoom += _Data.OnRaiseGameStartedRoom;
         }
 
         // Properties

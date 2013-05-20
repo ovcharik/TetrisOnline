@@ -45,6 +45,7 @@
     <Compile Include="Json\JsonFigure.cs" />
     <Compile Include="Json\JsonMessageObject.cs" />
     <Compile Include="Json\JsonRoom.cs" />
+    <Compile Include="Json\JsonRoomUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

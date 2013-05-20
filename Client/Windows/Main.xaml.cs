@@ -42,12 +42,16 @@ namespace Client.Windows
         // Server Events Handlers
         public void OnRaiseReceiveStoped(object sender, Exception e)
         {
-            Dispatcher.Invoke(delegate
+            try
             {
-                MessageBox.Show(e.Message);
-                this.Connection.Disconnect();
-                this.MainFrame.Content = this.SignInPage;
-            });
+                Dispatcher.Invoke(delegate
+                {
+                    MessageBox.Show(e.Message);
+                    this.Connection.Disconnect();
+                    this.MainFrame.Content = this.SignInPage;
+                });
+            }
+            catch { }
         }
 
     }

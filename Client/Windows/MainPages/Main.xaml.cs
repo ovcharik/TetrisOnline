@@ -1,5 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Threading;
 
 namespace Client.Windows.MainPages
 {
@@ -9,6 +12,7 @@ namespace Client.Windows.MainPages
         {
             InitializeComponent();
             UserList.DataContext = ServerSide.Connection.Instance.Data.Users;
+            RoomList.DataContext = ServerSide.Connection.Instance.Data.Rooms;
             Owner = owner;
         }
 
@@ -24,6 +28,32 @@ namespace Client.Windows.MainPages
             {
                 Windows.Messages.Instance.AddUser(u, true);
             }
+        }
+
+        private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
+        {
+            String name = this.textBoxRoomName.Text;
+            Int32 capacity = (Int32)this.comboBoxCapacity.SelectedItem;
+
+            Button b = sender as Button;
+            if (b == null) return;
+            b.IsEnabled = false;
+
+            new Thread(delegate()
+            {
+                try
+                {
+                    ServerSide.Sender.CreateRoom(name, capacity);
+                }
+                catch (Exception ex)
+                {
+                    this.Dispatcher.Invoke(delegate
+                    {
+                        MessageBox.Show(ex.Message);
+                        b.IsEnabled = true;
+                    });
+                }
+            }).Start();
         }
     }
 }

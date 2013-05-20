@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:Json="clr-namespace:Interface.Json;assembly=Interface" x:Class="Client.Windows.MainPages.Main" 
+      xmlns:Json="clr-namespace:Interface.Json;assembly=Interface" xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Models="clr-namespace:Client.Models" x:Class="Client.Windows.MainPages.Main" 
       mc:Ignorable="d" 
       d:DesignHeight="400" d:DesignWidth="600">
     <Grid>
@@ -15,11 +15,63 @@
         <ListView x:Name="UserList" Margin="10,41,10,10" ItemsSource="{Binding}" MouseDoubleClick="ListView_MouseDoubleClick_1" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="{Binding Color}" />
+                    <TextBlock x:Name="TextBlockUsername" Grid.Column="0" Text="{Binding Name}" Foreground="{Binding Color}" FontWeight="{Binding FontWieght}" />
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=isCurrent}" Value="True">
+                            <Setter TargetName="TextBlockUsername" Property="FontWeight" Value="Bold"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <GridSplitter HorizontalAlignment="Left" Padding="0" Margin="0" Width="5" Grid.Column="1" ResizeDirection="Columns"/>
-        <Label Content="Rooms" Grid.Column="1" Margin="10,10,10,0" VerticalAlignment="Top"/>
+        <Label Content="Rooms" Grid.Column="1" Margin="15,10,10,0" VerticalAlignment="Top"/>
+        <Button Content="New Room" Grid.Column="1" Margin="0,0,10,10" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom" Click="Button_Click_1"/>
+        <TextBox x:Name="textBoxRoomName" Grid.Column="1" Margin="15,0,220,10" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom"/>
+        <ComboBox x:Name="comboBoxCapacity" Grid.Column="1" Margin="0,0,90,10" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="125" SelectedIndex="2">
+            <System:Int32>1</System:Int32>
+            <System:Int32>2</System:Int32>
+            <System:Int32>3</System:Int32>
+            <System:Int32>4</System:Int32>
+            <System:Int32>5</System:Int32>
+        </ComboBox>
+        <Label Content="Room Name" Grid.Column="1" Margin="15,0,215,33" Height="26" VerticalAlignment="Bottom"/>
+        <Label Content="Number of Members" Grid.Column="1" Margin="0,0,90,33" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="125"/>
+        <ListView x:Name="RoomList" Grid.Column="1" Margin="15,41,10,64" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ItemsSource="{Binding}">
+            <ListView.View>
+                <GridView>
+                    <GridView.ColumnHeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Width="Auto" Padding="10,0" Text="{Binding}" />
+                        </DataTemplate>
+                    </GridView.ColumnHeaderTemplate>
+                    <GridViewColumn Header="Creator">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Creator.Name}" Foreground="{Binding Path=Creator.Color}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Room Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                    <GridViewColumn Header="Watchers" DisplayMemberBinding="{Binding Path=WatchersColumn}" />
+                    <GridViewColumn Header="Members" DisplayMemberBinding="{Binding Path=MembersColumn}"/>
+                    <GridViewColumn Header="Actions">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="ButtonPlay" Content="Play" Margin="0,0,5,0" Width="40"/>
+                                    <Button Content="Watch" Width="40"/>
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Path=isGameStarted}" Value="True">
+                                        <Setter TargetName="ButtonPlay" Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Page>

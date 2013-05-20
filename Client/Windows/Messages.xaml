@@ -37,10 +37,7 @@
                                         </Border>
                                     </Grid>
                                     <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Direction}">
-                                            <DataTrigger.Value>
-                                                <local:Direction>Output</local:Direction>
-                                            </DataTrigger.Value>
+                                        <DataTrigger Binding="{Binding Path=Direction}" Value="Output">
                                             <Setter TargetName="data" Property="Margin" Value="35,5,5,5"/>
                                             <Setter TargetName="time" Property="HorizontalAlignment" Value="Left"/>
                                         </DataTrigger>

@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Room.cs" />
     <Compile Include="ServerSide\Data.cs" />
     <Compile Include="Windows\Messages.xaml.cs">
       <DependentUpon>Messages.xaml</DependentUpon>

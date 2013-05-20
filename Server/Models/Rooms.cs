@@ -65,6 +65,16 @@ namespace Server.Models
             {
                 r = this._Rooms[roomId];
                 r.Entered(user);
+                JsonRoomUpdate jru = new JsonRoomUpdate
+                {
+                    UserId = user.Id,
+                    RoomId = roomId
+                };
+                this._Users.Broadcast(Events.ENTERED_ROOM, JsonConvert.SerializeObject(jru));
+                if (r.isStarted)
+                {
+                    this.GameStartedRoom(r);
+                }
             }
             catch (Exception ex)
             {
@@ -80,12 +90,76 @@ namespace Server.Models
             {
                 r = this._Rooms[roomId];
                 r.Watched(user);
+                JsonRoomUpdate jru = new JsonRoomUpdate
+                {
+                    UserId = user.Id,
+                    RoomId = roomId
+                };
+                this._Users.Broadcast(Events.WATCHED_ROOM, JsonConvert.SerializeObject(jru));
             }
             catch (Exception ex)
             {
                 Console.Error.Write("# Error: {0}", ex.Message);
             }
             return r;
+        }
+
+        public Room LeaveRoom(User user, Int32 roomId)
+        {
+            Room r = null;
+            try
+            {
+                r = this._Rooms[roomId];
+                r.Leaved(user);
+                JsonRoomUpdate jru = new JsonRoomUpdate
+                {
+                    UserId = user.Id,
+                    RoomId = roomId
+                };
+                this._Users.Broadcast(Events.LEAVED_ROOM, JsonConvert.SerializeObject(jru));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.Write("# Error: {0}", ex.Message);
+            }
+            return r;
+        }
+
+        public Room NotWatchRoom(User user, Int32 roomId)
+        {
+            Room r = null;
+            try
+            {
+                r = this._Rooms[roomId];
+                r.NotWatched(user);
+                JsonRoomUpdate jru = new JsonRoomUpdate
+                {
+                    UserId = user.Id,
+                    RoomId = roomId
+                };
+                this._Users.Broadcast(Events.NOTWATCHED_ROOM, JsonConvert.SerializeObject(jru));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.Write("# Error: {0}", ex.Message);
+            }
+            return r;
+        }
+
+        public void GameStartedRoom(Room room)
+        {
+            try
+            {
+                JsonRoomUpdate jru = new JsonRoomUpdate
+                {
+                    RoomId = room.Id
+                };
+                this._Users.Broadcast(Events.GAME_STARTED_ROOM, JsonConvert.SerializeObject(jru));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.Write("# Error: {0}", ex.Message);
+            }
         }
     }
 }

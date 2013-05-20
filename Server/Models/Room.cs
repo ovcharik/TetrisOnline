@@ -119,7 +119,7 @@ namespace Server.Models
                     Int = user.Id
                 };
                 String j = JsonConvert.SerializeObject(jbo);
-                this.Broadcast(Events.WATCHED_ROOM, j, user);
+                // this.Broadcast(Events.WATCHED_ROOM, j, user);
             }
         }
 
@@ -133,7 +133,7 @@ namespace Server.Models
                     Int = user.Id
                 };
                 String j = JsonConvert.SerializeObject(jbo);
-                this.Broadcast(Events.NOTWATCHED_ROOM, j);
+                // this.Broadcast(Events.NOTWATCHED_ROOM, j);
                 if (this._isEmpty) this._Rooms.RemovedRoom(this);
             }
             catch (Exception e)
@@ -154,10 +154,11 @@ namespace Server.Models
                         Int = user.Id
                     };
                     String j = JsonConvert.SerializeObject(jbo);
-                    this.Broadcast(Events.ENTER_ROOM, j);
+                    // this.Broadcast(Events.ENTER_ROOM, j);
                     if (this._Members.Count == this.Capacity)
                     {
-                        this.GameStarted();
+                        this._isStarted = true;
+                        //this._Rooms.GameStartedRoom(this);
                     }
                 }
             }
@@ -173,18 +174,13 @@ namespace Server.Models
                     Int = user.Id
                 };
                 String j = JsonConvert.SerializeObject(jbo);
-                this.Broadcast(Events.LEAVED_ROOM, j);
+                // this.Broadcast(Events.LEAVED_ROOM, j);
                 if (this._isEmpty) this._Rooms.RemovedRoom(this);
             }
             catch (Exception e)
             {
                 Console.Error.WriteLine("# Error: {0}", e.Message);
             }
-        }
-
-        public void GameStarted()
-        {
-            this.Broadcast(Events.GAME_STARTED, "");
         }
 
         public void RoomSendedMsg(User user, String json)

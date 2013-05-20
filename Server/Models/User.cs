@@ -149,7 +149,7 @@ namespace Server.Models
         {
             if (this._isRoomMember && this._Room != null)
             {
-                this._Room.Leaved(this);
+                this._Rooms.LeaveRoom(this, this._Room.Id);
                 this._isRoomMember = false;
                 this._Room = null;
             }
@@ -159,7 +159,7 @@ namespace Server.Models
         {
             if (this._isRoomWatcher && this._Room != null)
             {
-                this._Room.NotWatched(this);
+                this._Rooms.NotWatchRoom(this, this._Room.Id);
                 this._isRoomWatcher = false;
                 this._Room = null;
             }

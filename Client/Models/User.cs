@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -10,6 +7,17 @@ namespace Client.Models
 {
     public class User : INotifyPropertyChanged
     {
+        public User(Int32 id, String name, Boolean isCurrent = false)
+        {
+            _Color = Colors.GetColor();
+            _Messages = new ObservableCollection<Message>();
+            _MsgData = "";
+            _Name = name;
+            _Id = id;
+            _isCurrent = isCurrent;
+        }
+
+        // Properties
         public event PropertyChangedEventHandler PropertyChanged;
 
         private String _MsgData;
@@ -26,13 +34,17 @@ namespace Client.Models
             }
         }
 
-        public Int32 Id { get; set; }
-        public String Name { get; set; }
+        private Int32 _Id;
+        public Int32 Id { get { return _Id; } }
+
+        private String _Name;
+        public String Name { get { return _Name; } }
+
         private String _Color;
-        public String Color
-        {
-            get { return _Color; }
-        }
+        public String Color { get { return _Color; } }
+
+        private Boolean _isCurrent;
+        public Boolean isCurrent { get { return _isCurrent; } }
 
         public int _NewMsgs;
         public String NewMsgs
@@ -45,18 +57,9 @@ namespace Client.Models
         }
 
         private ObservableCollection<Message> _Messages;
-        public ObservableCollection<Message> Messages
-        {
-            get { return _Messages; }
-        }
+        public ObservableCollection<Message> Messages { get { return _Messages; } }
 
-        public User()
-        {
-            _Color = Colors.GetColor();
-            _Messages = new ObservableCollection<Message>();
-            _MsgData = "";
-        }
-
+        // Public Methods
         public void AddMessage(Message msg)
         {
             _Messages.Add(msg);
@@ -70,6 +73,7 @@ namespace Client.Models
             NotifyPropertyChanged("NewMsgs");
         }
 
+        // Private Methods
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             if (PropertyChanged != null)

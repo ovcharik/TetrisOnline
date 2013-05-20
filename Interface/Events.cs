@@ -28,7 +28,7 @@ namespace Interface
         public const Int32 NOTWATCHED_ROOM = 0x10A;
         public const Int32 ENTERED_ROOM = 0x10B;
         public const Int32 LEAVED_ROOM = 0x10C;
-        public const Int32 GAME_STARTED = 0x10D;
+        public const Int32 GAME_STARTED_ROOM = 0x10D;
         public const Int32 ROOM_SENDED_MSG = 0x00E;
         public const Int32 UPDATE_ROOM_LIST = 0x10F;
 

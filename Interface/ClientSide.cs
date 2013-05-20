@@ -67,6 +67,14 @@ namespace Interface
         public event EventHandler<String> RaiseUpdateUserId;
         public event EventHandler<String> RaiseUpdateUserList;
         public event EventHandler<String> RaiseSendedMsg;
+        public event EventHandler<String> RaiseUpdateRoomList;
+        public event EventHandler<String> RaiseCreatedRoom;
+        public event EventHandler<String> RaiseRemovedRoom;
+        public event EventHandler<String> RaiseEnteredRoom;
+        public event EventHandler<String> RaiseLeavedRoom;
+        public event EventHandler<String> RaiseWatchedRoom;
+        public event EventHandler<String> RaiseNotWatchedRoom;
+        public event EventHandler<String> RaiseGameStartedRoom;
 
         // Public Methods
         public void Send(Int32 e, String j)
@@ -178,6 +186,30 @@ namespace Interface
                     break;
                 case Events.SENDED_MSG:
                     if (RaiseSendedMsg != null) RaiseSendedMsg(this, j);
+                    break;
+                case Events.UPDATE_ROOM_LIST:
+                    if (RaiseUpdateRoomList != null) RaiseUpdateRoomList(this, j);
+                    break;
+                case Events.CREATED_ROOM:
+                    if (RaiseCreatedRoom != null) RaiseCreatedRoom(this, j);
+                    break;
+                case Events.REMOVED_ROOM:
+                    if (RaiseRemovedRoom != null) RaiseRemovedRoom(this, j);
+                    break;
+                case Events.ENTERED_ROOM:
+                    if (RaiseEnteredRoom != null) RaiseEnteredRoom(this, j);
+                    break;
+                case Events.LEAVED_ROOM:
+                    if (RaiseLeavedRoom != null) RaiseLeavedRoom(this, j);
+                    break;
+                case Events.WATCHED_ROOM:
+                    if (RaiseWatchedRoom != null) RaiseWatchedRoom(this, j);
+                    break;
+                case Events.NOTWATCHED_ROOM:
+                    if (RaiseNotWatchedRoom != null) RaiseNotWatchedRoom(this, j);
+                    break;
+                case Events.GAME_STARTED_ROOM:
+                    if (RaiseGameStartedRoom != null) RaiseGameStartedRoom(this, j);
                     break;
             }
         }

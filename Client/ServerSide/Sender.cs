@@ -16,14 +16,7 @@ namespace Client.ServerSide
                 String = name
             };
 
-            try
-            {
-                _Connection.ClientSide.Send(Events.SIGN_IN, JsonConvert.SerializeObject(j));
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            _Connection.ClientSide.Send(Events.SIGN_IN, JsonConvert.SerializeObject(j));
         }
 
         public static void SendMsg(Int32 id, String data)
@@ -34,14 +27,18 @@ namespace Client.ServerSide
                 Data = data
             };
 
-            try
+            _Connection.ClientSide.Send(Events.SEND_MSG, JsonConvert.SerializeObject(jmo));
+        }
+
+        public static void CreateRoom(String name, Int32 capacity)
+        {
+            JsonBaseObject jbo = new JsonBaseObject
             {
-                _Connection.ClientSide.Send(Events.SEND_MSG, JsonConvert.SerializeObject(jmo));
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+                String = name,
+                Int = capacity
+            };
+
+            _Connection.ClientSide.Send(Events.CREATE_ROOM, JsonConvert.SerializeObject(jbo));
         }
 
     }
