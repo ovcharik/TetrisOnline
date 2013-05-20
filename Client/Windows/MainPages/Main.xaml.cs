@@ -55,5 +55,10 @@ namespace Client.Windows.MainPages
                 }
             }).Start();
         }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            ServerSide.Connection.Instance.Disconnect();
+        }
     }
 }

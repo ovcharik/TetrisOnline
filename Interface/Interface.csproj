@@ -46,6 +46,7 @@
     <Compile Include="Json\JsonMessageObject.cs" />
     <Compile Include="Json\JsonRoom.cs" />
     <Compile Include="Json\JsonRoomUpdate.cs" />
+    <Compile Include="Log.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

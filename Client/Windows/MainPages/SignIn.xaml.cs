@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 
 namespace Client.Windows.MainPages
 {
@@ -44,15 +43,6 @@ namespace Client.Windows.MainPages
                         });
                     }
                 }).Start();
-        }
-
-        // Server Events
-        public void OnRaiseUpdateId(object sender, String json)
-        {
-            this.Dispatcher.Invoke(delegate {
-                NavigationService.Navigate(this.Owner.MainPage);
-                this.buttonSignIn.IsEnabled = true;
-            });
         }
     }
 }

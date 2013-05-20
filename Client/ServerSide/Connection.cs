@@ -5,6 +5,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+#if WITH_LOGS
+using System.IO;
+#endif
 
 namespace Client.ServerSide
 {
@@ -23,7 +26,13 @@ namespace Client.ServerSide
 
         private Connection()
         {
+#if WITH_LOGS
+            String logname = "var-" + DateTime.Now.ToShortDateString() + ".log";
+            _LogStream = new FileStream(logname, FileMode.Append);
+            this._ClientSide = new Interface.ClientSide(_LogStream);
+#else
             this._ClientSide = new Interface.ClientSide();
+#endif
             this._Data = new Data();
 
             _ClientSide.RaiseSignedIn += _Data.OnRaiseSignedIn;
@@ -42,6 +51,9 @@ namespace Client.ServerSide
         }
 
         // Properties
+#if WITH_LOGS
+        private FileStream _LogStream;
+#endif
         private Data _Data;
         public Data Data { get { return _Data; } }
 
@@ -80,6 +92,10 @@ namespace Client.ServerSide
                 this._socket.Dispose();
             }
             this._ClientSide.Dispose();
+#if WITH_LOGS
+            _LogStream.Close();
+            _LogStream.Dispose();
+#endif
         }
     }
 }

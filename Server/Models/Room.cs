@@ -185,7 +185,7 @@ namespace Server.Models
 
         public void RoomSendedMsg(User user, String json)
         {
-            this.Broadcast(Events.ROOM_SENDED_MSG, json, user);
+            this.Broadcast(Events.SENDED_MSG_ROOM, json, user);
         }
 
         public void Lose(User user)

@@ -8,13 +8,16 @@ namespace Interface
 {
     public class ClientSide
     {
-        public ClientSide()
+        public ClientSide(Stream log = null)
         {
             this.Socket = null;
+            this._LogStream = log;
         }
 
         // Properties
         private Thread _ReceivingThread;
+
+        private Stream _LogStream;
 
         private Socket _socket;
         public Socket Socket 
@@ -93,8 +96,8 @@ namespace Interface
             s.Read(data, 0, data.Length);
 
             this.Socket.Send(data);
+            Log.Send(_LogStream, e, j);
         }
-
         public void Dispose()
         {
             try
@@ -125,17 +128,20 @@ namespace Interface
                 buffer = new byte[s];
                 this.Socket.Receive(buffer, s, SocketFlags.Partial);
                 j = Encoding.UTF8.GetString(buffer);
+
+                Log.Recieved(_LogStream, e, j);
             }
             catch (Exception se)
             {
                 throw se;
             }
 
-            Thread th = new Thread(delegate()
-            {
+            //Thread th = new Thread(delegate()
+            //{
                 this._EventRoute(e, j);
-            });
-            th.Start();
+            //});
+            //Thread.Sleep(10);
+            //th.Start();
         }
 
         private void _EventRoute(Int32 e, String j)

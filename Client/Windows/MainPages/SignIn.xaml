@@ -32,7 +32,7 @@
         <Label Content="Sign In" Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="4" FontSize="24" Height="42"/>
         <Label Content="Host" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Name" Margin="10,41,0,0" VerticalAlignment="Top" Height="26" Grid.Column="1" Grid.Row="1"/>
-        <TextBox x:Name="textBoxAlert" Grid.Column="2" Margin="7,10,7,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" BorderThickness="3" SelectionBrush="#FFFFC5C5" Background="#FFFF9292" BorderBrush="#FFF10000" Padding="1" Visibility="Hidden"/>
+        <TextBox x:Name="textBoxAlert" Grid.Column="2" Margin="7,10,7,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" BorderThickness="3" SelectionBrush="#FFFFC5C5" Background="#FFFF9292" BorderBrush="#FFF10000" Padding="1" Visibility="Hidden" IsReadOnly="True"/>
 
     </Grid>
 </Page>

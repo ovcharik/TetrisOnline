@@ -75,7 +75,7 @@ namespace Server.Models
             {
                 foreach (var u in this._Users.Values)
                 {
-                    if (u == user) continue;
+                    if (u == user || u.Name == null) continue;
                     ul.Add(new JsonBaseObject
                     {
                         Int = u.Id,

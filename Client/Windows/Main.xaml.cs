@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using System.Windows.Navigation;
 
 namespace Client.Windows
 {
@@ -12,14 +13,18 @@ namespace Client.Windows
         public Main()
         {
             InitializeComponent();
-
+#if DEBUG
+            this.Title += " - DEBUG VERSION";
+#endif
             SignInPage = new MainPages.SignIn(this);
             MainPage = new MainPages.Main(this);
 
             Connection = ServerSide.Connection.Instance;
             Connection.Data.Dispatcher = Dispatcher;
 
-            Connection.ClientSide.RaiseUpdateUserId += SignInPage.OnRaiseUpdateId;
+            ServerSide.NavigationService.RaiseGotoMainPage += GotoMainPage;
+            ServerSide.NavigationService.RaiseGotoSignInPage += GotoSignInPage;
+
             Connection.ClientSide.RaiseReceiveStoped += OnRaiseReceiveStoped;
         }
 
@@ -44,11 +49,40 @@ namespace Client.Windows
         {
             try
             {
-                Dispatcher.Invoke(delegate
+                this.Dispatcher.Invoke(delegate
                 {
-                    MessageBox.Show(e.Message);
-                    this.Connection.Disconnect();
-                    this.MainFrame.Content = this.SignInPage;
+                    this.SignInPage.textBoxAlert.Text = e.Message;
+                    this.SignInPage.textBoxAlert.Visibility = Visibility.Visible;
+                    GotoSignInPage(null, null);
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void GotoMainPage(object sender, object e)
+        {
+            try
+            {
+                this.Dispatcher.Invoke(delegate
+                {
+                    this.MainFrame.Navigate(MainPage);
+                    SignInPage.buttonSignIn.IsEnabled = true;
+                });
+            }
+            catch { }
+        }
+
+        public void GotoSignInPage(object sender, object e)
+        {
+            try
+            {
+                this.Dispatcher.Invoke(delegate
+                {
+                    this.MainFrame.Navigate(SignInPage);
+                    SignInPage.buttonSignIn.IsEnabled = true;
                 });
             }
             catch { }

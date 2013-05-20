@@ -1,6 +1,7 @@
 ﻿using Interface.Json;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
@@ -22,6 +23,12 @@ namespace Client.ServerSide
         private Models.User _CurentUser;
         public Models.User CurentUser { get { return this._CurentUser; } }
 
+        private Models.Room _CurrentRoom;
+        public Models.Room CurrentRoom { get { return this._CurrentRoom; } }
+
+        private Models.Role _CurrentRole;
+        public Models.Role CurrentRole { get { return this._CurrentRole; } }
+
         private ObservableCollection<Models.User> _Users;
         public ObservableCollection<Models.User> Users { get { return _Users; } }
 
@@ -30,58 +37,23 @@ namespace Client.ServerSide
 
         public Dispatcher Dispatcher { get; set; }
 
-        // Methods
-        private Models.User SearchUserFromId(Int32 id)
-        {
-            Models.User r = null;
-            lock (this._Users)
-            {
-                foreach (var u in this._Users)
-                {
-                    if (u.Id == id)
-                    {
-                        r = u;
-                        break;
-                    }
-                }
-            }
-            return r;
-        }
-
-        private Models.Room SearchRoomFromId(Int32 id)
-        {
-            Models.Room room = null;
-            lock (this._Rooms)
-            {
-                foreach (var r in this._Rooms)
-                {
-                    if (r.Id == id)
-                    {
-                        room = r;
-                        break;
-                    }
-                }
-            }
-            return room;
-        }
-
         private Models.Room GetRoomFromJsonRoom(JsonRoom jr)
         {
-            Models.User creator = SearchUserFromId(jr.CreatorId);
+            Models.User creator = _Users.FirstOrDefault(u => u.Id == jr.CreatorId);
             if (creator == null) return null;
 
             Models.Room r = new Models.Room(jr.RoomId, creator, jr.Name, jr.Capacity, jr.isGameStarted);
 
             foreach (var mid in jr.Members)
             {
-                Models.User m = SearchUserFromId(mid);
+                Models.User m = _Users.FirstOrDefault(u => u.Id == mid);
                 if (m != null) r.Members.Add(m);
             }
 
             List<Models.User> ws = new List<Models.User>();
             foreach (var wid in jr.Watchers)
             {
-                Models.User w = SearchUserFromId(wid);
+                Models.User w = _Users.FirstOrDefault(u => u.Id == wid);
                 if (w != null) r.Watchers.Add(w);
             }
 
@@ -97,13 +69,15 @@ namespace Client.ServerSide
                 this._CurentUser = new Models.User(jbo.Int, jbo.String, true);
                 Dispatcher.Invoke(delegate
                 {
-                    lock (this._Users)
+
+                    lock (this._Rooms)
                     {
-                        lock (this._Rooms)
+                        lock (this._Users)
                         {
                             this._Users.Clear();
                             this._Rooms.Clear();
                             this._Users.Add(this._CurentUser);
+                            NavigationService.GotoMainPage();
                         }
                     }
                 });
@@ -145,10 +119,15 @@ namespace Client.ServerSide
             JsonBaseObject user = JsonConvert.DeserializeObject<JsonBaseObject>(json);
             Dispatcher.Invoke(delegate
             {
-                Models.User u = SearchUserFromId(user.Int);
+                Models.User u = _Users.FirstOrDefault(ur => ur.Id == user.Int);
                 lock (this._Users)
                 {
                     if (u != null) this.Users.Remove(u);
+                    if (u == CurentUser)
+                    {
+                        this._CurentUser = null;
+                        NavigationService.GotoSignInPage();
+                    }
                 }
             });
         }
@@ -158,7 +137,7 @@ namespace Client.ServerSide
             JsonMessageObject msg = JsonConvert.DeserializeObject<JsonMessageObject>(json);
             Dispatcher.Invoke(delegate
             {
-                Models.User user = SearchUserFromId(msg.UserId);
+                Models.User user = _Users.FirstOrDefault(u => u.Id == msg.UserId);
                 if (user == null) return;
                 Models.Message m = new Models.Message
                 {
@@ -214,7 +193,7 @@ namespace Client.ServerSide
                 JsonBaseObject jbo = JsonConvert.DeserializeObject<JsonBaseObject>(json);
                 Dispatcher.Invoke(delegate
                 {
-                    Models.Room r = this.SearchRoomFromId(jbo.Int);
+                    Models.Room r = _Rooms.FirstOrDefault(ur => ur.Id == jbo.Int);
                     lock (this._Rooms)
                     {
                         if (r != null) this._Rooms.Remove(r);
@@ -230,11 +209,17 @@ namespace Client.ServerSide
                 JsonRoomUpdate jru = JsonConvert.DeserializeObject<JsonRoomUpdate>(json);
                 Dispatcher.Invoke(delegate
                 {
-                    Models.Room r = this.SearchRoomFromId(jru.RoomId);
-                    Models.User u = this.SearchUserFromId(jru.UserId);
+                    Models.Room r = _Rooms.FirstOrDefault(ur => ur.Id == jru.RoomId);
+                    Models.User u = _Users.FirstOrDefault(ur => ur.Id == jru.UserId);
                     if (r != null && u != null)
                     {
                         r.Entered(u);
+                        if (u == CurentUser)
+                        {
+                            this._CurrentRole = Models.Role.Member;
+                            this._CurrentRoom = r;
+                            NavigationService.GotoRoomPage();
+                        }
                     }
                 });
             }
@@ -247,11 +232,17 @@ namespace Client.ServerSide
                 JsonRoomUpdate jru = JsonConvert.DeserializeObject<JsonRoomUpdate>(json);
                 Dispatcher.Invoke(delegate
                 {
-                    Models.Room r = this.SearchRoomFromId(jru.RoomId);
-                    Models.User u = this.SearchUserFromId(jru.UserId);
+                    Models.Room r = _Rooms.FirstOrDefault(ur => ur.Id == jru.RoomId);
+                    Models.User u = _Users.FirstOrDefault(ur => ur.Id == jru.UserId);
                     if (r != null && u != null)
                     {
                         r.Watched(u);
+                        if (u == CurentUser)
+                        {
+                            this._CurrentRole = Models.Role.Watcher;
+                            this._CurrentRoom = r;
+                            NavigationService.GotoRoomPage();
+                        }
                     }
                 });
             }
@@ -264,11 +255,16 @@ namespace Client.ServerSide
                 JsonRoomUpdate jru = JsonConvert.DeserializeObject<JsonRoomUpdate>(json);
                 Dispatcher.Invoke(delegate
                 {
-                    Models.Room r = this.SearchRoomFromId(jru.RoomId);
-                    Models.User u = this.SearchUserFromId(jru.UserId);
+                    Models.Room r = _Rooms.FirstOrDefault(ur => ur.Id == jru.RoomId);
+                    Models.User u = _Users.FirstOrDefault(ur => ur.Id == jru.UserId);
                     if (r != null && u != null)
                     {
                         r.Leaved(u);
+                        if (u == CurentUser)
+                        {
+                            this._CurrentRoom = null;
+                            NavigationService.GotoMainPage();
+                        }
                     }
                 });
             }
@@ -281,11 +277,16 @@ namespace Client.ServerSide
                 JsonRoomUpdate jru = JsonConvert.DeserializeObject<JsonRoomUpdate>(json);
                 Dispatcher.Invoke(delegate
                 {
-                    Models.Room r = this.SearchRoomFromId(jru.RoomId);
-                    Models.User u = this.SearchUserFromId(jru.UserId);
+                    Models.Room r = _Rooms.FirstOrDefault(ur => ur.Id == jru.RoomId);
+                    Models.User u = _Users.FirstOrDefault(ur => ur.Id == jru.UserId);
                     if (r != null && u != null)
                     {
                         r.NotWatched(u);
+                        if (u == CurentUser)
+                        {
+                            this._CurrentRoom = null;
+                            NavigationService.GotoMainPage();
+                        }
                     }
                 });
             }
@@ -298,7 +299,7 @@ namespace Client.ServerSide
                 JsonRoomUpdate jru = JsonConvert.DeserializeObject<JsonRoomUpdate>(json);
                 Dispatcher.Invoke(delegate
                 {
-                    Models.Room r = this.SearchRoomFromId(jru.RoomId);
+                    Models.Room r = _Rooms.FirstOrDefault(ur => ur.Id == jru.RoomId);
                     if (r != null)
                     {
                         r.GameStarted();
