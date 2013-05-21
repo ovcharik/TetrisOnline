@@ -13,7 +13,7 @@ namespace Interface
         public const Int32 NOTWATCH_ROOM = 0x006;
         public const Int32 ENTER_ROOM = 0x007;
         public const Int32 LEAVE_ROOM = 0x008;
-        public const Int32 ROOM_SEND_MSG = 0x009;
+        public const Int32 SEND_ROOM_MSG = 0x009;
 
         // Server
         public const Int32 SIGNED_IN = 0x101;
@@ -52,7 +52,7 @@ namespace Interface
                     return "Enter Room";
                 case LEAVE_ROOM:
                     return "Leave Room";
-                case ROOM_SEND_MSG:
+                case SEND_ROOM_MSG:
                     return "Room Send Message";
 
                 case SIGNED_IN:

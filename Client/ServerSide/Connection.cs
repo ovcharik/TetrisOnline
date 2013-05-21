@@ -48,6 +48,7 @@ namespace Client.ServerSide
             _ClientSide.RaiseWatchedRoom += _Data.OnRaiseWatchedRoom;
             _ClientSide.RaiseNotWatchedRoom += _Data.OnRaiseNotWatchedRoom;
             _ClientSide.RaiseGameStartedRoom += _Data.OnRaiseGameStartedRoom;
+            _ClientSide.RaiseSendedMsgRoom += _Data.OnRaiseSendedMsgRoom;
         }
 
         // Properties

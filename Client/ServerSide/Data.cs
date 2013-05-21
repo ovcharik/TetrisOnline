@@ -264,6 +264,11 @@ namespace Client.ServerSide
                             Type = Models.Message.MessageType.Status,
                             Data = "Entered room \"" + r.Name + "\""
                         });
+                        r.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = u.Name + " entered room"
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRole = Models.Role.Member;
@@ -293,6 +298,11 @@ namespace Client.ServerSide
                             Type = Models.Message.MessageType.Status,
                             Data = "Watch room \"" + r.Name + "\""
                         });
+                        r.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = u.Name + " watch room"
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRole = Models.Role.Watcher;
@@ -321,6 +331,11 @@ namespace Client.ServerSide
                             Type = Models.Message.MessageType.Status,
                             Data = "Leaved room \"" + r.Name + "\""
                         });
+                        r.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = u.Name + " leaved room"
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRoom = null;
@@ -348,6 +363,11 @@ namespace Client.ServerSide
                             Type = Models.Message.MessageType.Status,
                             Data = "Not watch room \"" + r.Name + "\""
                         });
+                        r.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = u.Name + " not watch room"
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRoom = null;
@@ -369,7 +389,33 @@ namespace Client.ServerSide
                     if (r != null)
                     {
                         r.GameStarted();
+                        r.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = "Game started"
+                        });
                     }
+                });
+            }
+        }
+
+        public void OnRaiseSendedMsgRoom(object sender, String json)
+        {
+            JsonMessageObject msg = JsonConvert.DeserializeObject<JsonMessageObject>(json);
+            if (_CurrentRoom != null)
+            {
+                Dispatcher.Invoke(delegate
+                {
+                    Models.User user = _Users.FirstOrDefault(u => u.Id == msg.UserId);
+                    if (user == null) return;
+                    Models.Message m = new Models.Message
+                    {
+                        Data = msg.Data,
+                        DateTime = msg.DateTime,
+                        Type = Models.Message.MessageType.Input,
+                        User = user
+                    };
+                    _CurrentRoom.AddMessage(m);
                 });
             }
         }

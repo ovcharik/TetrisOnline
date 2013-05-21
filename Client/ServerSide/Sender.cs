@@ -71,5 +71,14 @@ namespace Client.ServerSide
             _Connection.ClientSide.Send(Events.NOTWATCH_ROOM, "NOTWATCH_ROOM");
         }
 
+        public static void SendRoomMsg(String data)
+        {
+            JsonMessageObject jmo = new JsonMessageObject
+            {
+                Data = data
+            };
+            _Connection.ClientSide.Send(Events.SEND_ROOM_MSG, JsonConvert.SerializeObject(jmo));
+        }
+
     }
 }

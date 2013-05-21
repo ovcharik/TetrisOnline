@@ -22,7 +22,7 @@
                     </Grid.RowDefinitions>
                     <GridSplitter HorizontalAlignment="Stretch" Height="5" Grid.Row="1" VerticalAlignment="Top" ResizeDirection="Rows"/>
                     <TextBox Grid.Row="1" TextWrapping="Wrap" Margin="0,5,60,0" AcceptsReturn="True" Text="{Binding MsgData}" KeyDown="TextBox_KeyDown_2"/>
-                    <Button Content="Send" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="60" Height="22" Margin="0,5,0,0" Click="Button_Click_2" IsEnabled="{Binding isOnline}"/>
+                    <Button Content="Send" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="60" Height="22" Margin="0,5,0,0" Click="Button_Click_2" IsEnabled="{Binding SendButtonEnabled}"/>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" ScrollChanged="ScrollViewer_ScrollChanged_1">
                         <ItemsControl ItemsSource="{Binding Path=Messages}" HorizontalContentAlignment="Stretch" AllowDrop="True" Focusable="False" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <ItemsControl.ItemTemplate>
@@ -44,8 +44,11 @@
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Path=Type}" Value="Status">
                                             <Setter TargetName="message" Property="Visibility" Value="Hidden"/>
-                                            <Setter TargetName="time" Property="Visibility" Value="Hidden"/>
+                                            <Setter TargetName="data" Property="Visibility" Value="Hidden"/>
+                                            <Setter TargetName="data" Property="MinHeight" Value="0"/>
+                                            <Setter TargetName="data" Property="Text" Value=""/>
                                             <Setter TargetName="status" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="time" Property="Visibility" Value="Hidden"/>
                                             <Setter TargetName="message_grid" Property="Height" Value="24"/>
                                         </DataTrigger>
                                     </DataTemplate.Triggers>

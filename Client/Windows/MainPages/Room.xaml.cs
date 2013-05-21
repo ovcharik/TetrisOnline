@@ -22,14 +22,26 @@ namespace Client.Windows.MainPages
             InitializeComponent();
         }
 
-        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            Models.Room r = this.DataContext as Models.Room;
+            if (r == ServerSide.Connection.Instance.Data.CurrentRoom)
+            {
+                String data = this.TextBoxMessage.Text;
+                if (data.Length == 0) return;
 
+                ServerSide.Sender.SendRoomMsg(data);
+
+                r.AddMessage(new Models.Message
+                {
+                    Type = Models.Message.MessageType.Output,
+                    DateTime = DateTime.Now,
+                    Data = data,
+                    User = ServerSide.Connection.Instance.Data.CurentUser
+                });
+
+                r.CurrentMessage = "";
+            }
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -50,6 +62,16 @@ namespace Client.Windows.MainPages
             if (u != null)
             {
                 Windows.Messages.Instance.AddUser(u, true);
+            }
+        }
+
+        private void ScrollViewer_ScrollChanged_1(object sender, ScrollChangedEventArgs e)
+        {
+            ScrollViewer sv = sender as ScrollViewer;
+            if (sv == null) return;
+            if (sv.VerticalOffset == sv.ScrollableHeight)
+            {
+                sv.ScrollToBottom();
             }
         }
     }

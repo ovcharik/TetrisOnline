@@ -12,6 +12,7 @@ namespace Client.Models
         {
             this._Members = new ObservableCollection<User>();
             this._Watchers = new ObservableCollection<User>();
+            this._Messages = new ObservableCollection<Message>();
             this._Id = id;
             this._Creator = creator;
             this._Name = name;
@@ -40,8 +41,8 @@ namespace Client.Models
         private Int32 _Capacity;
         public Int32 Capacity { get { return _Capacity; } }
 
-        private List<Message> _Messages;
-        public List<Message> Messages { get { return _Messages; } }
+        private ObservableCollection<Message> _Messages;
+        public ObservableCollection<Message> Messages { get { return _Messages; } }
 
         private Boolean _isGameStarted;
         public Boolean isGameStarted { get { return _isGameStarted; } }
@@ -54,6 +55,17 @@ namespace Client.Models
         public String WatchersColumn
         {
             get { return this.Watchers.Count.ToString(); }
+        }
+
+        private String _CurrentMessage;
+        public String CurrentMessage
+        {
+            get { return _CurrentMessage; }
+            set
+            {
+                _CurrentMessage = value;
+                NotifyPropertyChanged("CurrentMessage");
+            }
         }
 
         // Public Methods
@@ -97,6 +109,11 @@ namespace Client.Models
         {
             this._isGameStarted = true;
             NotifyPropertyChanged("isGameStarted");
+        }
+
+        public void AddMessage(Message msg)
+        {
+            _Messages.Add(msg);
         }
 
         // Private Methods

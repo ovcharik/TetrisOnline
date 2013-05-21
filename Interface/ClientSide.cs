@@ -78,6 +78,7 @@ namespace Interface
         public event EventHandler<String> RaiseWatchedRoom;
         public event EventHandler<String> RaiseNotWatchedRoom;
         public event EventHandler<String> RaiseGameStartedRoom;
+        public event EventHandler<String> RaiseSendedMsgRoom;
 
         // Public Methods
         public void Send(Int32 e, String j)
@@ -173,7 +174,7 @@ namespace Interface
                 case Events.NOTWATCH_ROOM:
                     if (RaiseNotWatchRoom != null) RaiseNotWatchRoom(this, j);
                     break;
-                case Events.ROOM_SEND_MSG:
+                case Events.SEND_ROOM_MSG:
                     if (RaiseRoomSendMsg != null) RaiseRoomSendMsg(this, j);
                     break;
 
@@ -216,6 +217,9 @@ namespace Interface
                     break;
                 case Events.GAME_STARTED_ROOM:
                     if (RaiseGameStartedRoom != null) RaiseGameStartedRoom(this, j);
+                    break;
+                case Events.SENDED_MSG_ROOM:
+                    if (RaiseSendedMsgRoom != null) RaiseSendedMsgRoom(this, j);
                     break;
             }
         }

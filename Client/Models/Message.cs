@@ -15,6 +15,22 @@ namespace Client.Models
 
         public String Time { get { return DateTime.ToShortTimeString(); } }
 
+        public String RoomMessage
+        {
+            get
+            {
+                if (Type != MessageType.Status)
+                {
+                    String r = "[ " + DateTime.ToShortTimeString() + " ] " + User.Name + ": " + Data;
+                    if (Type == MessageType.Input)
+                        return "> " + r;
+                    return "< " + r;
+                }
+                else
+                    return Data;
+            }
+        }
+
         public Message() { }
 
         public enum MessageType
