@@ -22,24 +22,31 @@
                     </Grid.RowDefinitions>
                     <GridSplitter HorizontalAlignment="Stretch" Height="5" Grid.Row="1" VerticalAlignment="Top" ResizeDirection="Rows"/>
                     <TextBox Grid.Row="1" TextWrapping="Wrap" Margin="0,5,60,0" AcceptsReturn="True" Text="{Binding MsgData}" KeyDown="TextBox_KeyDown_2"/>
-                    <Button Content="Send" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="60" Height="22" Margin="0,5,0,0" Click="Button_Click_2" IsEnabled="{Binding SendButtonEnabled}"/>
+                    <Button Content="Send" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="60" Height="22" Margin="0,5,0,0" Click="Button_Click_2" IsEnabled="{Binding isOnline}"/>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" ScrollChanged="ScrollViewer_ScrollChanged_1">
                         <ItemsControl ItemsSource="{Binding Path=Messages}" HorizontalContentAlignment="Stretch" AllowDrop="True" Focusable="False" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Loaded="Grid_Loaded_1">
-                                        <TextBlock Name="time" Margin="10" TextWrapping="Wrap" Text="{Binding Time}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="0" Foreground="#FF747373" FontSize="10"/>
-                                        <Border Name="data" BorderThickness="1" Margin="5,5,35,5" CornerRadius="10" Background="#FFECECEC">
+                                <DataTemplate DataType="{x:Type local:Message}">
+                                    <Grid Name="message_grid" Loaded="Grid_Loaded_1">
+                                        <TextBlock Name="time" Margin="10" TextWrapping="Wrap" Text="{Binding Time}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="0" Foreground="#FF747373" FontSize="10"/>
+                                        <Border Name="message" BorderThickness="1" Margin="35,5,5,5" CornerRadius="10" Background="#FFECECEC">
                                             <Border.Effect>
                                                 <DropShadowEffect ShadowDepth="0" Color="#FFA0A0A0"/>
                                             </Border.Effect>
-                                            <TextBlock TextWrapping="Wrap" Padding="5" AllowDrop="True" MinHeight="30"><Run Language="ru-ru" Text="{Binding Data}"/></TextBlock>
+                                            <TextBlock Name="data" TextWrapping="Wrap" Padding="5" AllowDrop="True" MinHeight="30" Text="{Binding Data}"/>
                                         </Border>
+                                        <TextBlock Name="status" Visibility="Hidden" Text="{Binding Data}" FontSize="10" Margin="5"/>
                                     </Grid>
                                     <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Direction}" Value="Output">
-                                            <Setter TargetName="data" Property="Margin" Value="35,5,5,5"/>
-                                            <Setter TargetName="time" Property="HorizontalAlignment" Value="Left"/>
+                                        <DataTrigger Binding="{Binding Path=Type}" Value="Input">
+                                            <Setter TargetName="message" Property="Margin" Value="5,5,35,5"/>
+                                            <Setter TargetName="time" Property="HorizontalAlignment" Value="Right"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=Type}" Value="Status">
+                                            <Setter TargetName="message" Property="Visibility" Value="Hidden"/>
+                                            <Setter TargetName="time" Property="Visibility" Value="Hidden"/>
+                                            <Setter TargetName="status" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="message_grid" Property="Height" Value="24"/>
                                         </DataTrigger>
                                     </DataTemplate.Triggers>
                                 </DataTemplate>

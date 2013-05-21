@@ -15,6 +15,13 @@ namespace Client.Models
             _Name = name;
             _Id = id;
             _isCurrent = isCurrent;
+            _Status = UserStatus.Online;
+        }
+
+        public enum UserStatus
+        {
+            Online,
+            Offline
         }
 
         // Properties
@@ -64,18 +71,40 @@ namespace Client.Models
 
         public Room Room { get; set; }
 
+        private UserStatus _Status;
+        public UserStatus Status { get { return _Status; } }
+
+        public Boolean isOnline { get { return Status == UserStatus.Online; } }
+
         // Public Methods
         public void AddMessage(Message msg)
         {
             _Messages.Add(msg);
-            _NewMsgs++;
-            NotifyPropertyChanged("NewMsgs");
+            if (msg.Type != Message.MessageType.Status)
+            {
+                _NewMsgs++;
+                NotifyPropertyChanged("NewMsgs");
+            }
         }
 
         public void ResetNewMsgs()
         {
             _NewMsgs = 0;
             NotifyPropertyChanged("NewMsgs");
+        }
+
+        public void SetOffline()
+        {
+            _Status = UserStatus.Offline;
+            NotifyPropertyChanged("Status");
+            NotifyPropertyChanged("isOnline");
+        }
+
+        public void SetOnline()
+        {
+            _Status = UserStatus.Online;
+            NotifyPropertyChanged("Status");
+            NotifyPropertyChanged("isOnline");
         }
 
         // Private Methods

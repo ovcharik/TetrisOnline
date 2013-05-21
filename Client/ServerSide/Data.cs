@@ -103,7 +103,14 @@ namespace Client.ServerSide
                     {
                         lock (this._Users)
                         {
-                            this._Users.Add(new Models.User(j.Int, j.String));
+                            Models.User u = new Models.User(j.Int, j.String);
+                            u.SetOnline();
+                            u.AddMessage(new Models.Message
+                            {
+                                Data = "Connected",
+                                Type = Models.Message.MessageType.Status
+                            });
+                            this._Users.Add(u);
                         }
                     }
                 });
@@ -117,7 +124,14 @@ namespace Client.ServerSide
             {
                 lock (this._Users)
                 {
-                    this._Users.Add(new Models.User(user.Int, user.String));
+                    Models.User u = new Models.User(user.Int, user.String);
+                    u.SetOnline();
+                    u.AddMessage(new Models.Message
+                    {
+                        Data = "Connected",
+                        Type = Models.Message.MessageType.Status
+                    });
+                    this._Users.Add(u);
                 }
             });
         }
@@ -130,16 +144,25 @@ namespace Client.ServerSide
                 Models.User u = _Users.FirstOrDefault(ur => ur.Id == user.Int);
                 lock (this._Users)
                 {
-                    if (u != null) this.Users.Remove(u);
-                    if (u.Room != null)
+                    if (u != null)
                     {
-                        u.Room.Leaved(u);
-                        u.Room.NotWatched(u);
-                    }
-                    if (u == CurentUser)
-                    {
-                        this._CurentUser = null;
-                        NavigationService.GotoSignInPage();
+                        this.Users.Remove(u);
+                        if (u.Room != null)
+                        {
+                            u.Room.Leaved(u);
+                            u.Room.NotWatched(u);
+                        }
+                        if (u == CurentUser)
+                        {
+                            this._CurentUser = null;
+                            NavigationService.GotoSignInPage();
+                        }
+                        u.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = "Dissconected"
+                        });
+                        u.SetOffline();
                     }
                 }
             });
@@ -156,7 +179,7 @@ namespace Client.ServerSide
                 {
                     Data = msg.Data,
                     DateTime = msg.DateTime,
-                    Direction = Models.Direction.Input,
+                    Type = Models.Message.MessageType.Input,
                     User = user
                 };
                 user.AddMessage(m);
@@ -193,7 +216,15 @@ namespace Client.ServerSide
                     lock (this._Rooms)
                     {
                         Models.Room r = this.GetRoomFromJsonRoom(jr);
-                        if (r != null) this._Rooms.Add(r);
+                        if (r != null)
+                        {
+                            this._Rooms.Add(r);
+                            r.Creator.AddMessage(new Models.Message
+                            {
+                                Type = Models.Message.MessageType.Status,
+                                Data = "Created room \"" + r.Name + "\""
+                            });
+                        }
                     }
                 });
             }
@@ -228,6 +259,11 @@ namespace Client.ServerSide
                     {
                         r.Entered(u);
                         u.Room = r;
+                        u.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = "Entered room \"" + r.Name + "\""
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRole = Models.Role.Member;
@@ -252,6 +288,11 @@ namespace Client.ServerSide
                     {
                         r.Watched(u);
                         u.Room = r;
+                        u.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = "Watch room \"" + r.Name + "\""
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRole = Models.Role.Watcher;
@@ -275,6 +316,11 @@ namespace Client.ServerSide
                     if (r != null && u != null)
                     {
                         r.Leaved(u);
+                        u.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = "Leaved room \"" + r.Name + "\""
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRoom = null;
@@ -297,6 +343,11 @@ namespace Client.ServerSide
                     if (r != null && u != null)
                     {
                         r.NotWatched(u);
+                        u.AddMessage(new Models.Message
+                        {
+                            Type = Models.Message.MessageType.Status,
+                            Data = "Not watch room \"" + r.Name + "\""
+                        });
                         if (u == CurentUser)
                         {
                             this._CurrentRoom = null;

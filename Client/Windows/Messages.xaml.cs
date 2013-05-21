@@ -33,7 +33,7 @@ namespace Client.Windows
         // Private Methods
         private void _SendMessage(Models.User user)
         {
-            if (user.MsgData.Length > 0)
+            if (user.MsgData.Length > 0 && user.isOnline)
             {
                 try
                 {
@@ -44,7 +44,7 @@ namespace Client.Windows
                         User = ServerSide.Connection.Instance.Data.CurentUser,
                         Data = user.MsgData,
                         DateTime = DateTime.Now,
-                        Direction = Models.Direction.Output
+                        Type = Models.Message.MessageType.Output
                     };
                     user.AddMessage(msg);
                     user.MsgData = "";
